@@ -7,9 +7,9 @@ def avg(A,axis=0):
     avg acts on index idim; default is idim=1.
     """
     if (axis==0):
-        B = (A[:,1:]+ A[:,:-1])/2
+        B = (A[1:,]+ A[:-1,])/2
     elif (axis==1):
-        B = (A[1:,:]+ A[:-1,:])/2
+        B = (A[:,1:]+ A[:,:-1])/2
     else:
         raise ValueError('Wrong value for axis')
     return B           

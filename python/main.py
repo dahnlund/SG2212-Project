@@ -23,30 +23,30 @@ from DD import DD
 from avg import avg
 from src import tic, toc
 
-#%% Simulation parameters
+#%% Simulation parameters Gautier
 
 Pr = 0.71
-Re = ....
+Re = 25
 # Ri = 0. 
-dt = .....
+dt = 0.01
 Tf = 20
 Lx = 1.
 Ly = 1.
-Nx = ....
-Ny = .....
+Nx = 100
+Ny = 100
 namp = 0.
 ig = 200
 
 #%% Discretization in space and time, and definition of boundary conditions
 
 # number of iteratins
-Nit = ....
+Nit = 100
 # edge coordinates
-x = np.linspace(....)
-y = np.linspace(....)
+x = np.linspace(0,Lx,(Nx-1)*Ny)
+y = np.linspace(0,Ly, (Ny-1)*Nx)
 # grid spacing
-hx = ......
-hy = ......
+hx = x[-1]/((Nx-1)*Ny)
+hy = y[-1]/((Ny-1)*Nx)
 
 # boundary conditions
 Utop = 1.; Ttop = 1.; Tbottom = 0.;
@@ -63,7 +63,7 @@ tN = ......  tS =.....
 # Laplace operator on cell centres: Fxx + Fyy
 # First set homogeneous Neumann condition all around
 #Lp = np.kron(....).toarray(),DD(.....).toarray()) + np.kron(.....).toarray(),sp.eye(.....).toarray());
-Lp = sp.kron(sp.eye(Ny), DD(Nx,Nx)) + sp.kron(DD(Ny,Ny), sp.eye(Nx))
+Lp = sp.kron(sp.eye(Ny), DD(Nx,hx)) + sp.kron(DD(Ny,hy), sp.eye(Nx))
 # Set one Dirichlet value to fix pressure in that point
 Lp[:,0] = 0; Lp[0,:] =0; Lp[0,0] = 0;
 Lp_lu, Lp_piv = scl.lu_factor(Lp)
@@ -95,11 +95,11 @@ for k in range(Nit):
     # include all boundary points for u and v (linear extrapolation
     # for ghost cells) into extended array (Ue,Ve)
     Ue = np.vstack((uW, U, uE)); Ue = np.hstack( (2*uS-Ue[:,0,np.newaxis], Ue, 2*uN-Ue[:,-1,np.newaxis]));
-    Ve = .....
+    Ve = np.vstack((vW, V, vE)); Ue = np.hstack( (2*vS-Ve[:,0,np.newaxis], Ve, 2*vN-Ve[:,-1,np.newaxis]));
 
     # averaged (Ua,Va) of u and v on corners
-    Ua = .....
-    Va = ..... 
+    Ua = avg(Ue, axis = 1)
+    Va = avg(Ve, axis = 0) 
 
     #  construct individual parts of nonlinear terms
     dUVdx = np.diff(....
