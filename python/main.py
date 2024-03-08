@@ -32,8 +32,8 @@ dt = 0.01
 Tf = 20
 Lx = 1.
 Ly = 1.
-Nx = 100
-Ny = 100
+Nx = 10
+Ny = 10
 namp = 0.
 ig = 200
 
@@ -42,8 +42,8 @@ ig = 200
 # number of iteratins
 Nit = 100
 # edge coordinates
-x = np.linspace(0,Lx,(Nx-1)*Ny)
-y = np.linspace(0,Ly, (Ny-1)*Nx)
+x = np.linspace(0,Lx,Nx+1)
+y = np.linspace(0,Ly, Ny+1)
 # grid spacing
 hx = x[-1]/((Nx-1)*Ny)
 hy = y[-1]/((Ny-1)*Nx)
@@ -94,8 +94,8 @@ for k in range(Nit):
 
     # include all boundary points for u and v (linear extrapolation
     # for ghost cells) into extended array (Ue,Ve)
-    Ue = np.vstack((uW, U, uE)); Ue = np.hstack( (2*uS-Ue[:,0,np.newaxis], Ue, 2*uN-Ue[:,-1,np.newaxis]));
-    Ve = np.vstack((vW, V, vE)); Ue = np.hstack( (2*vS-Ve[:,0,np.newaxis], Ve, 2*vN-Ve[:,-1,np.newaxis]));
+    Ue = np.vstack((uW, U, uE)); Ue = np.hstack( (2*uS-Ue[:,0,np.newaxis], Ue,  2*uN-Ue[:,-1,np.newaxis]))
+    Ve = np.hstack((vS, V, vN)); Ve = np.vstack( (2*vW-Ve[0,:,np.newaxis].T, Ve, 2*vE-Ve[-1,:,np.newaxis].T));
 
     # averaged (Ua,Va) of u and v on corners
     Ua = avg(Ue, axis = 1)
@@ -106,8 +106,8 @@ for k in range(Nit):
     dUVdy = np.diff( Ua*Va, axis=1)/hy;
     Ub    = avg( Ue[:,1:-1],0);   
     Vb    = avg( Ve[1:-1,:],1);
-    dU2dx = np.diff( Ub**2 )/hx;
-    dV2dy = np.diff( Vb**2 )/hx;
+    dU2dx = np.diff( Ub**2, axis = 0 )/hx;
+    dV2dy = np.diff( Vb**2, axis = 1 )/hx;
 
     # treat viscosity explicitly
     viscu = np.diff( Ue[:,1:-1],axis=0,n=2 )/hx**2 + \
@@ -130,8 +130,8 @@ for k in range(Nit):
     P = np.reshape(P.T, (Ny,Nx)).T
 
     # apply pressure correction
-    U = U - dt*np.diff.....)/hx;
-    V = V - dt*np.diff(....)/hy; 
+    #U = U - dt*np.diff.....)/hx;
+    #V = V - dt*np.diff(....)/hy; 
 
     # Temperature equation
     #....
