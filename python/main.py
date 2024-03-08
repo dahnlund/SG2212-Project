@@ -51,11 +51,11 @@ hy = y[-1]/((Ny-1)*Nx)
 # boundary conditions
 Utop = 1.; Ttop = 1.; Tbottom = 0.;
 uN = x*0 + Utop;  uN = uN[:,np.newaxis];    vN = avg(x)*0;    vN = vN[:,np.newaxis];
-uS = ....  uS = uS[:,np.newaxis];         vS = ....  vS = vS[:,np.newaxis];
-uW = avg(y)*0;  uW = uW[np.newaxis,:];       vW = ....   vW = vW[np.newaxis,:];
+uS = x*0;  uS = uS[:,np.newaxis];         vS = avg(x)*0;  vS = vS[:,np.newaxis];
+uW = avg(y)*0;  uW = uW[np.newaxis,:];       vW = y*0;  vW = vW[np.newaxis,:];
 uE = avg(y)*0;  uE = uE[np.newaxis,:];       vE = y*0;    vE = vE[np.newaxis,:];
 
-tN = ......  tS =.....
+tN = 100; tS = 10
 
 #%% Pressure correction and pressure Poisson equation
 
@@ -65,8 +65,8 @@ tN = ......  tS =.....
 #Lp = np.kron(....).toarray(),DD(.....).toarray()) + np.kron(.....).toarray(),sp.eye(.....).toarray());
 Lp = sp.kron(sp.eye(Ny), DD(Nx,hx)) + sp.kron(DD(Ny,hy), sp.eye(Nx))
 # Set one Dirichlet value to fix pressure in that point
-Lp[:,0] = 0; Lp[0,:] =0; Lp[0,0] = 0;
-Lp_lu, Lp_piv = scl.lu_factor(Lp)
+Lp[:,0] = 0; Lp[0,:] =0; Lp[0,0] = 1;
+Lp_lu, Lp_piv = scl.lu_factor(Lp.toarray())
 Lps = sp.csc_matrix(Lp)
 Lps_lu = splu(Lps)
 
@@ -102,37 +102,39 @@ for k in range(Nit):
     Va = avg(Ve, axis = 0) 
 
     #  construct individual parts of nonlinear terms
-    dUVdx = np.diff(....
-    dUVdy = ....
+    dUVdx = np.diff( Ua*Va, axis=0)/hx;
+    dUVdy = np.diff( Ua*Va, axis=1)/hy;
     Ub    = avg( Ue[:,1:-1],0);   
-    Vb    = ....
-    dU2dx = np.diff( .... )/hx;
-    dV2dy = .....
+    Vb    = avg( Ve[1:-1,:],1);
+    dU2dx = np.diff( Ub**2 )/hx;
+    dV2dy = np.diff( Vb**2 )/hx;
 
     # treat viscosity explicitly
-    viscu = np.diff( .....,axis=1,n=2 )/hy**2;
-    viscv = np.diff( .....,axis=0,n=2 )/hx**2;
+    viscu = np.diff( Ue[:,1:-1],axis=0,n=2 )/hx**2 + \
+         np.diff( Ue[1:-1,:],axis=1,n=2 )/hy**2;
+    viscv = np.diff( Ve[:,1:-1],axis=0,n=2 )/hx**2 + \
+         np.diff( Ve[1:-1,:],axis=1,n=2 )/hy**2;
 
     # compose final nonlinear term + explicit viscous terms
-    U = U + ....
-    V = V + ....
+    U = U + dt*(- dU2dx - dUVdy + 1/Re * viscu)
+    V = V + dt*(- dUVdx - dV2dy + 1/Re * viscv)
 
     # pressure correction, Dirichlet P=0 at (1,1)
-    rhs = (np.diff( ....)/hx + np.diff(.....),axis=1)/hy)/dt;
-    rhs = np.reshape(.....);
+    rhs = (np.diff(np.vstack((uW, U, uE)), axis=0)/hx + np.diff(np.vstack((vW,V,Ve)),axis=1)/hy)/dt;
+    rhs = np.reshape(rhs.T,(Nx*Ny,1));
     rhs[0] = 0;
 
     # different ways of solving the pressure-Poisson equation:
-    P = Lps_lu.solve(....)
+    P = Lps_lu.solve(rhs)
 
-    P = np.reshape(....
+    P = np.reshape(P.T, (Ny,Nx)).T
 
     # apply pressure correction
     U = U - dt*np.diff.....)/hx;
     V = V - dt*np.diff(....)/hy; 
 
     # Temperature equation
-    ....
+    #....
 
     # do postprocessing to file
     if (ig>0 and np.floor(k/ig)==k/ig):
