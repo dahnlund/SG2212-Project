@@ -107,7 +107,7 @@ for k in range(Nit):
     Ub    = avg( Ue[:,1:-1],0);   
     Vb    = avg( Ve[1:-1,:],1);
     dU2dx = np.diff( Ub**2, axis = 0 )/hx;
-    dV2dy = np.diff( Vb**2, axis = 1 )/hx;
+    dV2dy = np.diff( Vb**2, axis = 1 )/hy;
 
     # treat viscosity explicitly
     viscu = np.diff( Ue[:,1:-1],axis=0,n=2 )/hx**2 + \
