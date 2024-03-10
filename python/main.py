@@ -32,7 +32,7 @@ dt = 0.01
 Tf = 20
 Lx = 1.
 Ly = 1.
-Nx = 5
+Nx = 10
 Ny = 10
 namp = 0.
 ig = 200
@@ -118,7 +118,7 @@ for k in range(Nit):
     # compose final nonlinear term + explicit viscous terms
     U = U + dt*(- dU2dx - dUVdy[1:-1,:] + 1/Re * viscu)
     V = V + dt*(- dUVdx[:,1:-1] - dV2dy + 1/Re * viscv)
-
+    print(k)
     # pressure correction, Dirichlet P=0 at (1,1)
     rhs = (np.diff(np.vstack((uW, U, uE)), axis=0)/hx + np.diff(np.hstack((vS, V, vN)),axis=1)/hy)/dt;
     rhs = np.reshape(rhs.T,(Nx*Ny,1));
@@ -130,8 +130,8 @@ for k in range(Nit):
     P = np.reshape(P.T, (Ny,Nx)).T
 
     # apply pressure correction
-    #U = U - dt*np.diff.....)/hx;
-    #V = V - dt*np.diff(....)/hy; 
+    U = U - dt*np.diff(P, axis = 0)/hx;
+    V = V - dt*np.diff(P, axis = 1)/hy; 
 
     # Temperature equation
     #....
