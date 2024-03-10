@@ -23,17 +23,17 @@ from DD import DD
 from avg import avg
 from src import tic, toc
 
-#%% Simulation parameters Gautier
+#%% Simulation parameters
 
 Pr = 0.71
-Re = 25
+Re = 1000
 # Ri = 0. 
-dt = 0.01
+dt = 0.001
 Tf = 20
 Lx = 1.
 Ly = 1.
-Nx = 100
-Ny = 100
+Nx = 20
+Ny = 20
 namp = 0.1
 ig = 200
 
@@ -115,8 +115,8 @@ for k in range(Nit):
          np.diff( Ve[1:-1,:],axis=1,n=2 )/hy**2;
 
     # compose final nonlinear term + explicit viscous terms
-    U = U + dt*(- dU2dx - dUVdy[1:-1,:] + 1/Re * viscu)
-    V = V + dt*(- dUVdx[:,1:-1] - dV2dy + 1/Re * viscv)
+    U = U + dt*( -dU2dx -dUVdy[1:-1,:] + 1/Re * viscu)
+    V = V + dt*( -dUVdx[:,1:-1] - dV2dy + 1/Re * viscv)
 
     # pressure correction, Dirichlet P=0 at (1,1)
     rhs = (np.diff(np.vstack((uW, U, uE)), axis=0)/hx + np.diff(np.hstack((vS, V, vN)),axis=1)/hy)/dt;
@@ -157,7 +157,7 @@ if (ig>0):
 
 
 #%% Visualization of the flow fiels at the end time
-    
+
 Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
 Va = np.vstack((vW,avg(np.hstack((vS,V,
                                   vN)),0),vE));
@@ -167,6 +167,7 @@ plt.quiver(x,y,Ua.T,Va.T)
 plt.gca().set_aspect(1.)
 plt.colorbar()
 plt.title(f'Velocity at t={k*dt:.2f}')
+plt.savefig('velocity.png')
 plt.show()
 
 #%% Compute divergence on cell centres
@@ -178,10 +179,11 @@ plt.pcolor(avg(x),avg(y),div.T,shading='nearest')
 plt.gca().set_aspect(1.)
 plt.colorbar()
 plt.title(f'Divergence at t={k*dt:.2f}')
+plt.savefig('divergence.png')
 plt.show()
 
 #%% Analysis
-
+"""
 plt.figure()
 plt.spy(Lp)
 plt.show()
@@ -189,3 +191,4 @@ plt.show()
 print(Lp.shape)
 print(np.linalg.matrix_rank(Lp))
 print(scl.null_space(Lp))
+"""
