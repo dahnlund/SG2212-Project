@@ -32,15 +32,15 @@ dt = 0.01
 Tf = 20
 Lx = 1.
 Ly = 1.
-Nx = 10
-Ny = 10
+Nx = 100
+Ny = 100
 namp = 0.
 ig = 200
 
 #%% Discretization in space and time, and definition of boundary conditions
 
 # number of iteratins
-Nit = 100
+Nit = 1000
 # edge coordinates
 x = np.linspace(0,Lx,Nx+1)
 y = np.linspace(0,Ly, Ny+1)
@@ -118,7 +118,7 @@ for k in range(Nit):
     # compose final nonlinear term + explicit viscous terms
     U = U + dt*(- dU2dx - dUVdy[1:-1,:] + 1/Re * viscu)
     V = V + dt*(- dUVdx[:,1:-1] - dV2dy + 1/Re * viscv)
-    print(k)
+
     # pressure correction, Dirichlet P=0 at (1,1)
     rhs = (np.diff(np.vstack((uW, U, uE)), axis=0)/hx + np.diff(np.hstack((vS, V, vN)),axis=1)/hy)/dt;
     rhs = np.reshape(rhs.T,(Nx*Ny,1));
