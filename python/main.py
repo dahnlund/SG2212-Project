@@ -26,21 +26,21 @@ from src import tic, toc
 #%% Simulation parameters
 
 Pr = 0.71
-Re = 1000
+Re = 10000
 # Ri = 0. 
-dt = 0.001
+dt = 0.0001
 Tf = 20
 Lx = 1.
 Ly = 1.
 Nx = 20
 Ny = 20
-namp = 0.1
-ig = 200
+namp = 0.
+ig = 20
 
 #%% Discretization in space and time, and definition of boundary conditions
 
 # number of iteratins
-Nit = 1000
+Nit = 5000
 # edge coordinates
 x = np.linspace(0,Lx,Nx+1)
 y = np.linspace(0,Ly, Ny+1)
@@ -134,7 +134,7 @@ for k in range(Nit):
 
     # Temperature equation
     #....
-
+    """
     # do postprocessing to file
     if (ig>0 and np.floor(k/ig)==k/ig):
         plt.clf()
@@ -144,6 +144,22 @@ for k in range(Nit):
         plt.title(f'Temperature at t={k*dt:.2f}')
         writer.grab_frame()
 
+    # update progress bar
+    if np.floor(51*k/Nit)>np.floor(51*(k-1)/Nit): 
+        print('.',end='')
+    """
+    if (ig>0 and np.floor(k/ig)==k/ig):
+        Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
+        Va = np.vstack((vW,avg(np.hstack((vS,V,
+                                        vN)),0),vE));
+        plt.clf()
+        plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20)
+        plt.quiver(x,y,Ua.T,Va.T)
+        plt.gca().set_aspect(1.)
+        plt.colorbar()
+        plt.title(f'Velocity at t={k:.2f}')
+        writer.grab_frame()
+    
     # update progress bar
     if np.floor(51*k/Nit)>np.floor(51*(k-1)/Nit): 
         print('.',end='')
