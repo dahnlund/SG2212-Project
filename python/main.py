@@ -34,7 +34,7 @@ Lx = 1.
 Ly = 1.
 Nx = 100
 Ny = 100
-namp = 0.
+namp = 0.1
 ig = 200
 
 #%% Discretization in space and time, and definition of boundary conditions
@@ -63,12 +63,11 @@ tN = 100; tS = 10
 # Laplace operator on cell centres: Fxx + Fyy
 # First set homogeneous Neumann condition all around
 #Lp = np.kron(....).toarray(),DD(.....).toarray()) + np.kron(.....).toarray(),sp.eye(.....).toarray());
-Lp = sp.kron(sp.eye(Ny), DD(Nx,hx)) + sp.kron(DD(Ny,hy), sp.eye(Nx))
+Lp = sp.kron(sp.eye(Ny, format = 'csc'), DD(Nx,hx), format = 'csc') \
+    + sp.kron(DD(Ny,hy), sp.eye(Nx, format = 'csc'), format = 'csc')
 # Set one Dirichlet value to fix pressure in that point
 Lp[:,0] = 0; Lp[0,:] =0; Lp[0,0] = 1;
-Lp_lu, Lp_piv = scl.lu_factor(Lp.toarray())
-Lps = sp.csc_matrix(Lp)
-Lps_lu = splu(Lps)
+Lps_lu = splu(Lp)
 
 #%% Initial conditions
 
