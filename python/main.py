@@ -32,7 +32,7 @@ dt = 0.01
 Tf = 20
 Lx = 1.
 Ly = 1.
-Nx = 10
+Nx = 5
 Ny = 10
 namp = 0.
 ig = 200
@@ -116,11 +116,11 @@ for k in range(Nit):
          np.diff( Ve[1:-1,:],axis=1,n=2 )/hy**2;
 
     # compose final nonlinear term + explicit viscous terms
-    U = U + dt*(- dU2dx - dUVdy + 1/Re * viscu)
-    V = V + dt*(- dUVdx - dV2dy + 1/Re * viscv)
+    U = U + dt*(- dU2dx - dUVdy[1:-1,:] + 1/Re * viscu)
+    V = V + dt*(- dUVdx[:,1:-1] - dV2dy + 1/Re * viscv)
 
     # pressure correction, Dirichlet P=0 at (1,1)
-    rhs = (np.diff(np.vstack((uW, U, uE)), axis=0)/hx + np.diff(np.vstack((vW,V,Ve)),axis=1)/hy)/dt;
+    rhs = (np.diff(np.vstack((uW, U, uE)), axis=0)/hx + np.diff(np.hstack((vS, V, vN)),axis=1)/hy)/dt;
     rhs = np.reshape(rhs.T,(Nx*Ny,1));
     rhs[0] = 0;
 
