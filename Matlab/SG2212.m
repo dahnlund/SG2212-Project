@@ -18,15 +18,15 @@ if (lid_driven_cavity==1)
   % The Richardson number is zero, i.e. passive scalar.
   
   Pr = 0.71;     % Prandtl number
-  Re = 10000;      % Reynolds number
+  Re = 25;      % Reynolds number
   Ri = 0.;       % Richardson number
   
-  dt = 0.0001;      % time step
+  dt = 0.001;      % time step
   Tf = 20;       % final time
   Lx = 1;        % width of box
   Ly = 1;        % height of box
-  Nx = 50;      % number of cells in x
-  Ny = 50;      % number of cells in y
+  Nx = 20;      % number of cells in x
+  Ny = 20;      % number of cells in y
   ig = 200;      % number of iterations between output
   
   % Boundary and initial conditions:
@@ -49,7 +49,7 @@ else
   
   dt = 0.0001;   % time step
   Tf = 20;       % final time
-  Lx = 10.;      % width of box
+  Lx = 1.;      % width of box
   Ly = 1;        % height of box
   Nx = 20;      % number of cells in x
   Ny = 20;      % number of cells in y
@@ -82,6 +82,7 @@ uE = avg(y, 2)*0;           vE = y*0;
 tN = 300;         tS = 300;
 % Initial conditions
 U = zeros(Nx-1, Ny); V = zeros(Nx, Ny-1);
+
 % linear profile for T with random noise
 T = 0.5 + namp*rand(Nx,Ny);
 % Time series
@@ -99,7 +100,7 @@ Lp(1,:) = zeros(1, size(Lp, 2)) ; Lp(1,1) = 1 ;
 % Here you can pre-compute the LU decomposition
 % [LLp,ULp] = lu(Lp);
 %-----------------------------------------
-
+%%
 % Progress bar (do not replace the ... )
 fprintf(...
     '[         |         |         |         |         ]\n')

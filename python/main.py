@@ -26,14 +26,14 @@ from src import tic, toc
 #%% Simulation parameters
 
 Pr = 0.71
-Re = 250
+Re = 25
 # Ri = 0. 
 dt = 0.001
-Tf = 1
+Tf = 5
 Lx = 1.
 Ly = 1.
-Nx = 50
-Ny = 50
+Nx = 20
+Ny = 20
 namp = 0.
 ig = 20
 
@@ -45,8 +45,8 @@ Nit = int(Tf/dt)
 x = np.linspace(0,Lx,Nx+1)
 y = np.linspace(0,Ly, Ny+1)
 # grid spacing
-hx = x[-1]/((Nx-1)*Ny)
-hy = y[-1]/((Ny-1)*Nx)
+hx = x[-1]/(Nx)
+hy = y[-1]/(Ny)
 
 # boundary conditions
 Utop = 1; Ttop = 1.; Tbottom = 0.;
@@ -74,6 +74,7 @@ Lps_lu = splu(Lp)
 
 U = np.zeros((Nx-1,Ny))
 V = np.zeros((Nx,Ny-1))
+
 T = 0.5 + \
     namp*(np.random.rand(Nx,Ny)-0.5); 
 
