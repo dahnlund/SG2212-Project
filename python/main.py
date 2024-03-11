@@ -32,15 +32,15 @@ dt = 0.0001
 Tf = 20
 Lx = 1.
 Ly = 1.
-Nx = 20
-Ny = 20
+Nx = 50
+Ny = 50
 namp = 0.
 ig = 20
 
 #%% Discretization in space and time, and definition of boundary conditions
 
 # number of iteratins
-Nit = 5000
+Nit = 2000
 # edge coordinates
 x = np.linspace(0,Lx,Nx+1)
 y = np.linspace(0,Ly, Ny+1)
@@ -157,7 +157,7 @@ for k in range(Nit):
         plt.quiver(x,y,Ua.T,Va.T)
         plt.gca().set_aspect(1.)
         plt.colorbar()
-        plt.title(f'Velocity at t={k:.2f}')
+        plt.title(f'Velocity at t={k*dt:.2f}')
         writer.grab_frame()
     
     # update progress bar
