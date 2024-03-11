@@ -26,10 +26,10 @@ from src import tic, toc
 #%% Simulation parameters
 
 Pr = 0.71
-Re = 10000
+Re = 250
 # Ri = 0. 
-dt = 0.0001
-Tf = 20
+dt = 0.001
+Tf = 1
 Lx = 1.
 Ly = 1.
 Nx = 50
@@ -40,7 +40,7 @@ ig = 20
 #%% Discretization in space and time, and definition of boundary conditions
 
 # number of iteratins
-Nit = 2000
+Nit = int(Tf/dt)
 # edge coordinates
 x = np.linspace(0,Lx,Nx+1)
 y = np.linspace(0,Ly, Ny+1)
@@ -49,7 +49,7 @@ hx = x[-1]/((Nx-1)*Ny)
 hy = y[-1]/((Ny-1)*Nx)
 
 # boundary conditions
-Utop = 1.; Ttop = 1.; Tbottom = 0.;
+Utop = 1; Ttop = 1.; Tbottom = 0.;
 uN = x*0 + Utop;  uN = uN[:,np.newaxis];    vN = avg(x)*0;    vN = vN[:,np.newaxis];
 uS = x*0;  uS = uS[:,np.newaxis];         vS = avg(x)*0;  vS = vS[:,np.newaxis];
 uW = avg(y)*0;  uW = uW[np.newaxis,:];       vW = y*0;  vW = vW[np.newaxis,:];
@@ -66,7 +66,8 @@ tN = 100; tS = 10
 Lp = sp.kron(sp.eye(Ny, format = 'csc'), DD(Nx,hx), format = 'csc') \
     + sp.kron(DD(Ny,hy), sp.eye(Nx, format = 'csc'), format = 'csc')
 # Set one Dirichlet value to fix pressure in that point
-Lp[:,0] = 0; Lp[0,:] =0; Lp[0,0] = 1;
+#Lp[:,0] = 0; Lp[0,:] =0; Lp[0,0] = 1;
+Lp[0,:] =0; Lp[0,0] = 1;
 Lps_lu = splu(Lp)
 
 #%% Initial conditions
@@ -115,8 +116,8 @@ for k in range(Nit):
          np.diff( Ve[1:-1,:],axis=1,n=2 )/hy**2;
 
     # compose final nonlinear term + explicit viscous terms
-    U = U + dt*( -dU2dx -dUVdy[1:-1,:] + 1/Re * viscu)
-    V = V + dt*( -dUVdx[:,1:-1] - dV2dy + 1/Re * viscv)
+    U = U + dt*( -dU2dx -dUVdy[1:-1,:] + viscu/Re)
+    V = V + dt*( -dUVdx[:,1:-1] - dV2dy + viscv/Re)
 
     # pressure correction, Dirichlet P=0 at (1,1)
     rhs = (np.diff(np.vstack((uW, U, uE)), axis=0)/hx + np.diff(np.hstack((vS, V, vN)),axis=1)/hy)/dt;
@@ -125,7 +126,7 @@ for k in range(Nit):
 
     # different ways of solving the pressure-Poisson equation:
     P = Lps_lu.solve(rhs)
-
+    #P = sp.linalg.spsolve(Lp, rhs, use_umfpack = False)
     P = np.reshape(P.T, (Ny,Nx)).T
 
     # apply pressure correction
