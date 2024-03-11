@@ -27,14 +27,14 @@ from src import tic, toc
 #%% Simulation parameters
 
 Pr = 0.71
-Re = 1000
+Re = 500
 # Ri = 0. 
-dt = 0.001
-Tf = 4
+dt = 0.0002
+Tf = 5
 Lx = 1.
 Ly = 1.
-Nx = 50
-Ny = 50
+Nx = 20
+Ny = 20
 namp = 0.
 ig = 20
 
