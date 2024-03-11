@@ -7,6 +7,7 @@ import matplotlib.animation
 import math 
 import scipy.sparse as sp
 import scipy.linalg as scl
+from tqdm import tqdm
 from scipy.sparse.linalg import splu
 params = {'legend.fontsize': 12,
           'legend.loc':'best',
@@ -26,14 +27,14 @@ from src import tic, toc
 #%% Simulation parameters
 
 Pr = 0.71
-Re = 25
+Re = 1000
 # Ri = 0. 
 dt = 0.001
-Tf = 5
+Tf = 4
 Lx = 1.
 Ly = 1.
-Nx = 20
-Ny = 20
+Nx = 50
+Ny = 50
 namp = 0.
 ig = 20
 
@@ -87,10 +88,8 @@ if (ig>0):
     fig=plt.figure()
     writer.setup(fig,"cavity.mp4",dpi=200)
 
-# progress bar
-print('[         |         |         |         |         ]')
 tic()
-for k in range(Nit):
+for k in tqdm(range(Nit), desc="Iterations"):
     # print("Iteration k=%i time=%.2e" % (k,k*dt))
 
     # include all boundary points for u and v (linear extrapolation
@@ -146,9 +145,6 @@ for k in range(Nit):
         plt.title(f'Temperature at t={k*dt:.2f}')
         writer.grab_frame()
 
-    # update progress bar
-    if np.floor(51*k/Nit)>np.floor(51*(k-1)/Nit): 
-        print('.',end='')
     """
     if (ig>0 and np.floor(k/ig)==k/ig):
         Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
@@ -162,9 +158,7 @@ for k in range(Nit):
         plt.title(f'Velocity at t={k*dt:.2f}')
         writer.grab_frame()
     
-    # update progress bar
-    if np.floor(51*k/Nit)>np.floor(51*(k-1)/Nit): 
-        print('.',end='')
+
 
 # finalise progress bar
 print(' done. Iterations k=%i time=%.2f' % (k,k*dt))
@@ -173,7 +167,7 @@ toc()
 if (ig>0):
     writer.finish()
 
-
+"""
 #%% Visualization of the flow fiels at the end time
 
 Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
@@ -187,7 +181,8 @@ plt.colorbar()
 plt.title(f'Velocity at t={k*dt:.2f}')
 plt.savefig('velocity.png')
 plt.show()
-
+"""
+"""
 #%% Compute divergence on cell centres
 
 # compute divergence on cell centres
@@ -199,7 +194,7 @@ plt.colorbar()
 plt.title(f'Divergence at t={k*dt:.2f}')
 plt.savefig('divergence.png')
 plt.show()
-
+"""
 #%% Analysis
 """
 plt.figure()
