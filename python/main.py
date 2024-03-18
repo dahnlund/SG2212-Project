@@ -26,11 +26,14 @@ from src import tic, toc
 
 #%% Simulation parameters
 
+anim = False  # Save animation
+
+
 Pr = 0.71
 Re = 500
 # Ri = 0. 
-dt = 0.0002
-Tf = 5
+dt = 0.001
+Tf = 25
 Lx = 1.
 Ly = 1.
 Nx = 20
@@ -56,6 +59,8 @@ uS = x*0;  uS = uS[:,np.newaxis];         vS = avg(x)*0;  vS = vS[:,np.newaxis];
 uW = avg(y)*0;  uW = uW[np.newaxis,:];       vW = y*0;  vW = vW[np.newaxis,:];
 uE = avg(y)*0;  uE = uE[np.newaxis,:];       vE = y*0;    vE = vE[np.newaxis,:];
 
+
+
 tN = 100; tS = 10
 
 #%% Pressure correction and pressure Poisson equation
@@ -63,11 +68,9 @@ tN = 100; tS = 10
 # Compute system matrices for pressure 
 # Laplace operator on cell centres: Fxx + Fyy
 # First set homogeneous Neumann condition all around
-#Lp = np.kron(....).toarray(),DD(.....).toarray()) + np.kron(.....).toarray(),sp.eye(.....).toarray());
 Lp = sp.kron(sp.eye(Ny, format = 'csc'), DD(Nx,hx), format = 'csc') \
     + sp.kron(DD(Ny,hy), sp.eye(Nx, format = 'csc'), format = 'csc')
 # Set one Dirichlet value to fix pressure in that point
-#Lp[:,0] = 0; Lp[0,:] =0; Lp[0,0] = 1;
 Lp[0,:] =0; Lp[0,0] = 1;
 Lps_lu = splu(Lp)
 
@@ -81,7 +84,7 @@ T = 0.5 + \
 
 #%% Main time-integration loop. Write output file "cavity.mp" if
 
-if (ig>0):
+if (ig>0) and anim:
     metadata = dict(title='Lid-driven cavity', artist='SG2212')
     writer = matplotlib.animation.FFMpegWriter(fps=15, metadata=metadata)
     matplotlib.use("Agg")
@@ -133,20 +136,8 @@ for k in tqdm(range(Nit), desc="Iterations"):
     U = U - dt*np.diff(P, axis = 0)/hx;
     V = V - dt*np.diff(P, axis = 1)/hy; 
 
-    # Temperature equation
-    #....
-    """
-    # do postprocessing to file
-    if (ig>0 and np.floor(k/ig)==k/ig):
-        plt.clf()
-        plt.contourf(avg(x),avg(y),T.T,levels=np.arange(0,1.05,0.05))
-        plt.gca().set_aspect(1.)
-        plt.colorbar()
-        plt.title(f'Temperature at t={k*dt:.2f}')
-        writer.grab_frame()
-
-    """
-    if (ig>0 and np.floor(k/ig)==k/ig):
+    
+    if (ig>0 and np.floor(k/ig)==k/ig and anim):
         Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
         Va = np.vstack((vW,avg(np.hstack((vS,V,
                                         vN)),0),vE));
@@ -155,7 +146,7 @@ for k in tqdm(range(Nit), desc="Iterations"):
         plt.quiver(x,y,Ua.T,Va.T)
         plt.gca().set_aspect(1.)
         plt.colorbar()
-        plt.title(f'Velocity at t={k*dt:.2f}')
+        plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
         writer.grab_frame()
     
 
@@ -164,10 +155,9 @@ for k in tqdm(range(Nit), desc="Iterations"):
 print(' done. Iterations k=%i time=%.2f' % (k,k*dt))
 toc()
 
-if (ig>0):
+if (ig>0) and anim:
     writer.finish()
 
-"""
 #%% Visualization of the flow fiels at the end time
 
 Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
@@ -178,7 +168,7 @@ plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20)
 plt.quiver(x,y,Ua.T,Va.T)
 plt.gca().set_aspect(1.)
 plt.colorbar()
-plt.title(f'Velocity at t={k*dt:.2f}')
+plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
 plt.savefig('velocity.png')
 plt.show()
 """
@@ -191,17 +181,6 @@ plt.figure()
 plt.pcolor(avg(x),avg(y),div.T,shading='nearest')
 plt.gca().set_aspect(1.)
 plt.colorbar()
-plt.title(f'Divergence at t={k*dt:.2f}')
+plt.title(f'Divergence at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
 plt.savefig('divergence.png')
 plt.show()
-"""
-#%% Analysis
-"""
-plt.figure()
-plt.spy(Lp)
-plt.show()
-
-print(Lp.shape)
-print(np.linalg.matrix_rank(Lp))
-print(scl.null_space(Lp))
-"""
