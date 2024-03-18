@@ -30,14 +30,14 @@ anim = False  # Save animation
 
 
 Pr = 0.71
-Re = 500
+Re = 4000
 # Ri = 0. 
 dt = 0.001
-Tf = 25
+Tf = 50
 Lx = 1.
 Ly = 1.
-Nx = 20
-Ny = 20
+Nx = 100
+Ny = 100
 namp = 0.
 ig = 20
 
@@ -142,17 +142,18 @@ for k in tqdm(range(Nit), desc="Iterations"):
         Va = np.vstack((vW,avg(np.hstack((vS,V,
                                         vN)),0),vE));
         plt.clf()
-        plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20)
+        normalizer = matplotlib.colors.Normalize(0,0.7)
+        plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20, norm = normalizer, cmap = "inferno")
         plt.quiver(x,y,Ua.T,Va.T)
         plt.gca().set_aspect(1.)
-        plt.colorbar()
+        plt.colorbar(norm = normalizer, cmap = "inferno")
         plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
         writer.grab_frame()
     
 
 
 # finalise progress bar
-print(' done. Iterations k=%i time=%.2f' % (k,k*dt))
+print(' done. Iterations k=%i time=%.2f' % (k+1,k*dt))
 toc()
 
 if (ig>0) and anim:
@@ -164,10 +165,11 @@ Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
 Va = np.vstack((vW,avg(np.hstack((vS,V,
                                   vN)),0),vE));
 plt.figure()
-plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20)
-plt.quiver(x,y,Ua.T,Va.T)
+normalizer = matplotlib.colors.Normalize(0,0.7)
+plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20,norm = normalizer, cmap = "inferno")
+plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
 plt.gca().set_aspect(1.)
-plt.colorbar()
+plt.colorbar(norm = normalizer, cmap = "inferno")
 plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
 plt.savefig('velocity.png')
 plt.show()
@@ -178,9 +180,9 @@ plt.show()
 # compute divergence on cell centres
 div = (np.diff( np.vstack( (uW,U, uE)),axis=0)/hx + np.diff( np.hstack(( vS, V, vN)),axis=1)/hy)
 plt.figure()
-plt.pcolor(avg(x),avg(y),div.T,shading='nearest')
+plt.pcolor(avg(x),avg(y),div.T, cmap = "inferno")#,shading='nearest')
 plt.gca().set_aspect(1.)
-plt.colorbar()
+plt.colorbar(norm = normalizer, cmap = "inferno")
 plt.title(f'Divergence at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
 plt.savefig('divergence.png')
 plt.show()
