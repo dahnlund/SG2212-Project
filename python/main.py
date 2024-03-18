@@ -30,7 +30,7 @@ anim = False  # Save animation
 
 
 Pr = 0.71
-Re = 4000
+Re = 800
 # Ri = 0. 
 dt = 0.001
 Tf = 50
@@ -129,7 +129,6 @@ for k in tqdm(range(Nit), desc="Iterations"):
 
     # different ways of solving the pressure-Poisson equation:
     P = Lps_lu.solve(rhs)
-    #P = sp.linalg.spsolve(Lp, rhs, use_umfpack = False)
     P = np.reshape(P.T, (Ny,Nx)).T
 
     # apply pressure correction
@@ -165,7 +164,7 @@ Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
 Va = np.vstack((vW,avg(np.hstack((vS,V,
                                   vN)),0),vE));
 plt.figure()
-normalizer = matplotlib.colors.Normalize(0,0.7)
+normalizer = matplotlib.colors.Normalize(0,0.4)
 plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20,norm = normalizer, cmap = "inferno")
 plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
 plt.gca().set_aspect(1.)
