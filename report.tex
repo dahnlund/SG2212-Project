@@ -9,7 +9,7 @@
 \usepackage{booktabs}% See geometry.pdf to learn the layout options. There are lots.
 \geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
 %\geometry{landscape}                % Activate for for rotated page geometry
-%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
 \usepackage{graphicx}
 \usepackage{amssymb, amsmath}
 \usepackage{epstopdf}
@@ -23,6 +23,11 @@
 \usepackage{bm}
 \usepackage{bbm}
 \usepackage{tikz}
+\usetikzlibrary{fit}
+
+\tikzset{every label/.style={font=\footnotesize,inner sep=1.5pt}}
+
+\newcommand{\stencilpt}[4][]{\node[circle,fill=blue,draw=blue, label={[shift={(-0.4,-0.0)}]below:#4},#1] at (#2) (#3) {}}
 \usepackage{pifont}
 \newtheorem{theorem}{Theorem}
 \usetikzlibrary{automata,positioning}
@@ -37,7 +42,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\title{\huge{Notes}}
+\title{\huge{Computational Fluid Dynamics}\\\Large{SG2212 Project Report}}
 \author{\LARGE{David Ahnlund}}
 \date{}
 
@@ -48,10 +53,91 @@
 \newpage% or \cleardoublepage
 \pagestyle{fancy}
 \fancyhead[L]{David Ahnlund}
-\fancyhead[R]{Notes}
+\fancyhead[R]{SG2212 Project}
+\fancyhead[C]{Lid-driven cavity}
 %%%% Write from here:
 
+\subsection*{Question 1}
+The kronecker operator (\textbf{kron}) is an operator for tensor product, which falls convinient
+when doing finite differences in higher dimensions than the 1D case. As we study the 2D case in this
+lid-driven cavity project the 5 point stencil is considered:
 
 
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[scale = 2]
+        \definecolor{wine}{RGB}{123,3,35}
+        \stencilpt[wine]{-1,0}{i-1}{$u_{i-1,j}$};
+        \stencilpt[black]{ 0,0}{i}  {$u_{i,j}$};
+        \stencilpt[wine]{ 1,0}{i+1}{$u_{i+1,j}$};
+        \stencilpt[wine]{0,-1}{j-1}{$u_{i,j-1}$};
+        \stencilpt[wine]{0, 1}{j+1}{$u_{i,j+1}$};
+        \draw
+        (i-1) -- (i)
+        (i) -- (i+1)
+        (i) -- (j+1)
+        (j-1) -- (i);
 
+    \end{tikzpicture}
+    
+    \caption{The five point stencil in 2D.} 
+    \label{fivepoint}  
+\end{figure}
+If we construct a finite difference scheme for the laplace operator we get:
+\begin{gather}
+    \nabla^2u = \frac{u_{i+1,j}-2u_{i,j}+u_{i-1,j}}{h_x^2} + \frac{u_{i,j+1}-2u_{i,j}+u_{i,j-1}}{h_y^2}\\
+    \left\{  \text{and if }h_x = h_y = h \implies \frac{u_{i+1,j}+u_{i-1,j} -4u_{i,j}+ u_{i,j+1}+u_{i,j-1}}{h^2} \right\}\label{simpllap}
+\end{gather}
+The above expression we can transform into a vector form in size $(N_x, N_y) \mapsto N_x \cdot N_y$, using the indexing
+that one step in $y$-direction is equivalent to one row in the matrix \textit{i.e.} $+N_x$ steps.
+
+We can now define the second partial derivative in the separate directions:
+\begin{equation*}
+    S_x = \frac{1}{h_x^2}\begin{bmatrix}
+        -1&1&\\
+        1&-2&1&\\
+        &1&-2&\ddots\\
+        &&\ddots&\ddots&&
+        \\
+        &&&1&-1\\
+    \end{bmatrix}\hspace{1cm}S_y = \frac{1}{h_y^2}\begin{bmatrix}
+        -1&1&\\
+        1&-2&1&\\
+        &1&-2&\ddots\\
+        &&\ddots&\ddots&&
+        \\
+        &&&1&-1\\
+    \end{bmatrix}
+\end{equation*}
+Forming a matrix by the size $(N_x \cdot N_y) \times (N_x \cdot N_y)$ is now done by the kronecker product.
+
+The operation done by the kronecker product essentially does the following in this case. Consider the identity matrix in the shape $N_y\times N_y$ ($I_y$), and the $S_x$ from above. We get:
+\begin{equation*}
+    \text{kron}(I_y, S_x) =  I_y \otimes S_x = \begin{bmatrix}
+        [S_x] & 0 & \hdots\\
+        0&[S_x]&0 &\hdots\\
+        \vdots& &\ddots\\
+        &&&[S_x]
+    \end{bmatrix} \hspace{5 mm} \text{shape is $(N_y\cdot N_x) \times (N_y\cdot N_x)$} 
+\end{equation*} 
+and for the other term in the sum of kronecker products we have:
+\begin{equation*}
+    S_y \otimes I_x = \begin{bmatrix}
+        S_y^{1,1} [I_x] & 0 & \hdots\\
+        0&S_y^{2,2}[I_x]& 0 &\hdots\\
+        \vdots& &\ddots\\
+        &&&S_y^{N_y,N_y}[I_x]
+        \end{bmatrix}\hspace{5 mm} \text{shape is $(N_y\cdot N_x) \times (N_y\cdot N_x)$} 
+\end{equation*}
+
+We can then see that in the simplified example where $N_x = N_y = N$ and $h_x = h_y = h = 1$ we get:
+\begin{equation*}
+    I_y \otimes S_x + S_y \otimes I_x = \begin{bmatrix}
+        -4&1&\hdots&1&\hdots\\
+        1&-4&1&\hdots&1&\hdots\\
+        0 &\ddots&\ddots &\ddots \\\\
+        &&&1&\hdots&1&-4
+    \end{bmatrix}
+\end{equation*}
+which describes the case stated in Equation \ref{simpllap}
 \end{document}
