@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1710778724 "/Users/david/KTH/SG2212-Project/report.tex" "output/report.pdf" "report" 1710778726 0
-  "/Users/david/KTH/SG2212-Project/report.tex" 1710778724 5050 cdc4f96443397fa885968a38b6d490c2 ""
+["pdflatex"] 1710779768 "/Users/david/KTH/SG2212-Project/report.tex" "output/report.pdf" "report" 1710779770 0
+  "/Users/david/KTH/SG2212-Project/report.tex" 1710779766 5189 c389592588ef1a4906c06f5eaa664405 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
@@ -209,9 +209,9 @@
   "/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1706091779 4623355 b8cad38412faebe1ce5b780a45db67bd ""
   "/usr/local/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1706091767 7883454 113955856fc282e92b687c387f147c75 ""
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
-  "output/report.aux" 1710778726 918 31d06b666ac3d752e414f31ca391d602 "pdflatex"
-  "output/report.out" 1710778725 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "report.tex" 1710778724 5050 cdc4f96443397fa885968a38b6d490c2 ""
+  "output/report.aux" 1710779769 979 30f535137206c6012ab87131f0c29cd5 "pdflatex"
+  "output/report.out" 1710779769 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "report.tex" 1710779766 5189 c389592588ef1a4906c06f5eaa664405 ""
   (generated)
   "output/report.aux"
   "output/report.log"

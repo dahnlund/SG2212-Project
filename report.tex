@@ -1,4 +1,4 @@
-%% Package loading etc.
+% Package loading etc.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[10pt]{report}
 \usepackage[margin=1.3in]{geometry}
@@ -86,7 +86,8 @@ lid-driven cavity project the 5 point stencil is considered:
 If we construct a finite difference scheme for the laplace operator we get:
 \begin{gather}
     \nabla^2u = \frac{u_{i+1,j}-2u_{i,j}+u_{i-1,j}}{h_x^2} + \frac{u_{i,j+1}-2u_{i,j}+u_{i,j-1}}{h_y^2}\\
-    \left\{  \text{and if }h_x = h_y = h \implies \frac{u_{i+1,j}+u_{i-1,j} -4u_{i,j}+ u_{i,j+1}+u_{i,j-1}}{h^2} \right\}\label{simpllap}
+    \left\{  \text{and if }h_x = h_y = h \implies \frac{u_{i+1,j}+u_{i-1,j} -4u_{i,j}+ u_{i,j+1}+u_{i,j-1}}{h^2} \right\}
+    \label{simplelap}
 \end{gather}
 The above expression we can transform into a vector form in size $(N_x, N_y) \mapsto N_x \cdot N_y$, using the indexing
 that one step in $y$-direction is equivalent to one row in the matrix \textit{i.e.} $+N_x$ steps.
@@ -131,13 +132,16 @@ and for the other term in the sum of kronecker products we have:
 \end{equation*}
 
 We can then see that in the simplified example where $N_x = N_y = N$ and $h_x = h_y = h = 1$ we get:
-\begin{equation*}
+\begin{equation}
     I_y \otimes S_x + S_y \otimes I_x = \begin{bmatrix}
         -4&1&\hdots&1&\hdots\\
         1&-4&1&\hdots&1&\hdots\\
         0 &\ddots&\ddots &\ddots \\\\
         &&&1&\hdots&1&-4
-    \end{bmatrix}
-\end{equation*}
-which describes the case stated in Equation \ref{simpllap}
+    \end{bmatrix} \label{kronmatrix}
+\end{equation}
+
+which describes the case stated in Equation \ref{simplelap}. Note that the $1$'s in matrix in Equation \ref{kronmatrix} are $N_x$ 
+values apart, with zero-values in between.
+
 \end{document}
