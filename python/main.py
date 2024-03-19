@@ -30,14 +30,14 @@ anim = False  # Save animation
 
 
 Pr = 0.71
-Re = 800
+Re = 100
 # Ri = 0. 
 dt = 0.001
-Tf = 50
+Tf = 80
 Lx = 1.
 Ly = 1.
-Nx = 100
-Ny = 100
+Nx = 50
+Ny = 50
 namp = 0.
 ig = 20
 
@@ -92,71 +92,79 @@ if (ig>0) and anim:
     writer.setup(fig,"cavity.mp4",dpi=200)
 
 tic()
-for k in tqdm(range(Nit), desc="Iterations"):
-    # print("Iteration k=%i time=%.2e" % (k,k*dt))
 
-    # include all boundary points for u and v (linear extrapolation
-    # for ghost cells) into extended array (Ue,Ve)
-    Ue = np.vstack((uW, U, uE)); Ue = np.hstack( (2*uS-Ue[:,0,np.newaxis], Ue,  2*uN-Ue[:,-1,np.newaxis]))
-    Ve = np.hstack((vS, V, vN)); Ve = np.vstack( (2*vW-Ve[0,:,np.newaxis].T, Ve, 2*vE-Ve[-1,:,np.newaxis].T));
+#Define probe
+cases = [25,250,5000]
+uvel = np.zeros((Nit+1, len(cases)))
 
-    # averaged (Ua,Va) of u and v on corners
-    Ua = avg(Ue, axis = 1)
-    Va = avg(Ve, axis = 0) 
+for i, Re in enumerate(cases):
+    print(f"Running case for Re = {Re}")
+    for k in tqdm(range(Nit), desc="Iterations"):
+        # print("Iteration k=%i time=%.2e" % (k,k*dt))
 
-    #  construct individual parts of nonlinear terms
-    dUVdx = np.diff( Ua*Va, axis=0)/hx;
-    dUVdy = np.diff( Ua*Va, axis=1)/hy;
-    Ub    = avg( Ue[:,1:-1],0);   
-    Vb    = avg( Ve[1:-1,:],1);
-    dU2dx = np.diff( Ub**2, axis = 0 )/hx;
-    dV2dy = np.diff( Vb**2, axis = 1 )/hy;
+        # include all boundary points for u and v (linear extrapolation
+        # for ghost cells) into extended array (Ue,Ve)
+        Ue = np.vstack((uW, U, uE)); Ue = np.hstack( (2*uS-Ue[:,0,np.newaxis], Ue,  2*uN-Ue[:,-1,np.newaxis]))
+        Ve = np.hstack((vS, V, vN)); Ve = np.vstack( (2*vW-Ve[0,:,np.newaxis].T, Ve, 2*vE-Ve[-1,:,np.newaxis].T));
 
-    # treat viscosity explicitly
-    viscu = np.diff( Ue[:,1:-1],axis=0,n=2 )/hx**2 + \
-         np.diff( Ue[1:-1,:],axis=1,n=2 )/hy**2;
-    viscv = np.diff( Ve[:,1:-1],axis=0,n=2 )/hx**2 + \
-         np.diff( Ve[1:-1,:],axis=1,n=2 )/hy**2;
+        # averaged (Ua,Va) of u and v on corners
+        Ua = avg(Ue, axis = 1)
+        Va = avg(Ve, axis = 0) 
 
-    # compose final nonlinear term + explicit viscous terms
-    U = U + dt*( -dU2dx -dUVdy[1:-1,:] + viscu/Re)
-    V = V + dt*( -dUVdx[:,1:-1] - dV2dy + viscv/Re)
+        #  construct individual parts of nonlinear terms
+        dUVdx = np.diff( Ua*Va, axis=0)/hx;
+        dUVdy = np.diff( Ua*Va, axis=1)/hy;
+        Ub    = avg( Ue[:,1:-1],0);   
+        Vb    = avg( Ve[1:-1,:],1);
+        dU2dx = np.diff( Ub**2, axis = 0 )/hx;
+        dV2dy = np.diff( Vb**2, axis = 1 )/hy;
 
-    # pressure correction, Dirichlet P=0 at (1,1)
-    rhs = (np.diff(np.vstack((uW, U, uE)), axis=0)/hx + np.diff(np.hstack((vS, V, vN)),axis=1)/hy)/dt;
-    rhs = np.reshape(rhs.T,(Nx*Ny,1));
-    rhs[0] = 0;
+        # treat viscosity explicitly
+        viscu = np.diff( Ue[:,1:-1],axis=0,n=2 )/hx**2 + \
+            np.diff( Ue[1:-1,:],axis=1,n=2 )/hy**2;
+        viscv = np.diff( Ve[:,1:-1],axis=0,n=2 )/hx**2 + \
+            np.diff( Ve[1:-1,:],axis=1,n=2 )/hy**2;
 
-    # different ways of solving the pressure-Poisson equation:
-    P = Lps_lu.solve(rhs)
-    P = np.reshape(P.T, (Ny,Nx)).T
+        # compose final nonlinear term + explicit viscous terms
+        U = U + dt*( -dU2dx -dUVdy[1:-1,:] + viscu/Re)
+        V = V + dt*( -dUVdx[:,1:-1] - dV2dy + viscv/Re)
 
-    # apply pressure correction
-    U = U - dt*np.diff(P, axis = 0)/hx;
-    V = V - dt*np.diff(P, axis = 1)/hy; 
+        # pressure correction, Dirichlet P=0 at (1,1)
+        rhs = (np.diff(np.vstack((uW, U, uE)), axis=0)/hx + np.diff(np.hstack((vS, V, vN)),axis=1)/hy)/dt;
+        rhs = np.reshape(rhs.T,(Nx*Ny,1));
+        rhs[0] = 0;
 
-    
-    if (ig>0 and np.floor(k/ig)==k/ig and anim):
-        Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
-        Va = np.vstack((vW,avg(np.hstack((vS,V,
-                                        vN)),0),vE));
-        plt.clf()
-        normalizer = matplotlib.colors.Normalize(0,0.7)
-        plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20, norm = normalizer, cmap = "inferno")
-        plt.quiver(x,y,Ua.T,Va.T)
-        plt.gca().set_aspect(1.)
-        plt.colorbar(norm = normalizer, cmap = "inferno")
-        plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
-        writer.grab_frame()
-    
+        # different ways of solving the pressure-Poisson equation:
+        P = Lps_lu.solve(rhs)
+        P = np.reshape(P.T, (Ny,Nx)).T
+
+        # apply pressure correction
+        U = U - dt*np.diff(P, axis = 0)/hx;
+        V = V - dt*np.diff(P, axis = 1)/hy; 
+
+        
+        if (ig>0 and np.floor(k/ig)==k/ig and anim):
+            Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
+            Va = np.vstack((vW,avg(np.hstack((vS,V,
+                                            vN)),0),vE));
+            plt.clf()
+            normalizer = matplotlib.colors.Normalize(0,0.7)
+            plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20, norm = normalizer, cmap = "inferno")
+            plt.quiver(x,y,Ua.T,Va.T)
+            plt.gca().set_aspect(1.)
+            plt.colorbar(norm = normalizer, cmap = "inferno")
+            plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
+            writer.grab_frame()
+        
+        uvel[k+1, i] = U[int(Nx/2), int(Ny/2)] #Save data in the middle of the domain
 
 
-# finalise progress bar
-print(' done. Iterations k=%i time=%.2f' % (k+1,k*dt))
-toc()
+    # finalise progress bar
+    print(' done. Iterations k=%i time=%.2f' % (k+1,k*dt))
+    toc()
 
-if (ig>0) and anim:
-    writer.finish()
+    if (ig>0) and anim:
+        writer.finish()
 
 #%% Visualization of the flow fiels at the end time
 
@@ -164,9 +172,10 @@ Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
 Va = np.vstack((vW,avg(np.hstack((vS,V,
                                   vN)),0),vE));
 plt.figure()
-normalizer = matplotlib.colors.Normalize(0,0.4)
+normalizer = matplotlib.colors.Normalize(0,0.7)
 plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20,norm = normalizer, cmap = "inferno")
 plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
+plt.scatter(x[int(Nx/2)], y[int(Ny/2)], color='red') 
 plt.gca().set_aspect(1.)
 plt.colorbar(norm = normalizer, cmap = "inferno")
 plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
@@ -185,3 +194,11 @@ plt.colorbar(norm = normalizer, cmap = "inferno")
 plt.title(f'Divergence at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
 plt.savefig('divergence.png')
 plt.show()
+
+plt.figure()
+plt.plot(np.linspace(0,Tf,int(Tf/dt)+1), uvel)
+plt.ylabel("U")
+plt.xlabel("time")
+plt.legend(cases)
+plt.grid()
+plt.savefig("plot1.png")
