@@ -1094,6 +1094,11 @@ INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmmib
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmbsy10.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy7.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
+INPUT ./figures/plot1.png
+INPUT ./figures/plot1.png
+INPUT figures/plot1.png
+INPUT ./figures/plot1.png
+INPUT ./figures/plot1.png
 INPUT ./figures/velocity_A.png
 INPUT ./figures/velocity_A.png
 INPUT figures/velocity_A.png
@@ -1109,6 +1114,11 @@ INPUT ./figures/velocity_C.png
 INPUT figures/velocity_C.png
 INPUT ./figures/velocity_C.png
 INPUT ./figures/velocity_C.png
+INPUT ./figures/velocity_D1.png
+INPUT ./figures/velocity_D1.png
+INPUT figures/velocity_D1.png
+INPUT ./figures/velocity_D1.png
+INPUT ./figures/velocity_D1.png
 INPUT ./figures/velocity_D.png
 INPUT ./figures/velocity_D.png
 INPUT figures/velocity_D.png

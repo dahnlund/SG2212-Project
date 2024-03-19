@@ -26,18 +26,18 @@ from src import tic, toc
 
 #%% Simulation parameters
 
-anim = False  # Save animation
+anim = True  # Save animation
 
 
 Pr = 0.71
-Re = 800
+Re = 25
 # Ri = 0. 
 dt = 0.001
-Tf = 50
+Tf = 20
 Lx = 1.
 Ly = 1.
-Nx = 100
-Ny = 100
+Nx = 50
+Ny = 50
 namp = 0.
 ig = 20
 

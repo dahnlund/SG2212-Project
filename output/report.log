@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  18 MAR 2024 18:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  19 MAR 2024 12:06
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -736,44 +736,55 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has b
                    \relax 
 l.135 \begin{equation}
                        [1]
-<figures/velocity_A.png, id=38, 578.16pt x 361.35pt>
+<figures/plot1.png, id=38, 578.16pt x 361.35pt>
+File: figures/plot1.png Graphic file (type png)
+<use figures/plot1.png>
+Package pdftex.def Info: figures/plot1.png  used on input line 158.
+(pdftex.def)             Requested size: 426.39256pt x 266.49608pt.
+<figures/velocity_A.png, id=40, 578.16pt x 361.35pt>
 File: figures/velocity_A.png Graphic file (type png)
 <use figures/velocity_A.png>
-Package pdftex.def Info: figures/velocity_A.png  used on input line 161.
+Package pdftex.def Info: figures/velocity_A.png  used on input line 167.
 (pdftex.def)             Requested size: 426.39256pt x 266.49608pt.
-<figures/velocity_B.png, id=40, 578.16pt x 361.35pt>
+<figures/velocity_B.png, id=41, 578.16pt x 361.35pt>
 File: figures/velocity_B.png Graphic file (type png)
 <use figures/velocity_B.png>
-Package pdftex.def Info: figures/velocity_B.png  used on input line 167.
+Package pdftex.def Info: figures/velocity_B.png  used on input line 173.
 (pdftex.def)             Requested size: 426.39256pt x 266.49608pt.
-<figures/velocity_C.png, id=41, 578.16pt x 361.35pt>
+ [2 <./figures/plot1.png>]
+<figures/velocity_C.png, id=52, 578.16pt x 361.35pt>
 File: figures/velocity_C.png Graphic file (type png)
 <use figures/velocity_C.png>
-Package pdftex.def Info: figures/velocity_C.png  used on input line 173.
+Package pdftex.def Info: figures/velocity_C.png  used on input line 179.
 (pdftex.def)             Requested size: 426.39256pt x 266.49608pt.
- [2 <./figures/velocity_A.png>]
-<figures/velocity_D.png, id=54, 578.16pt x 361.35pt>
+ [3 <./figures/velocity_A.png>]
+<figures/velocity_D1.png, id=61, 578.16pt x 361.35pt>
+File: figures/velocity_D1.png Graphic file (type png)
+<use figures/velocity_D1.png>
+Package pdftex.def Info: figures/velocity_D1.png  used on input line 185.
+(pdftex.def)             Requested size: 426.39256pt x 266.49608pt.
+<figures/velocity_D.png, id=62, 578.16pt x 361.35pt>
 File: figures/velocity_D.png Graphic file (type png)
 <use figures/velocity_D.png>
-Package pdftex.def Info: figures/velocity_D.png  used on input line 179.
+Package pdftex.def Info: figures/velocity_D.png  used on input line 191.
 (pdftex.def)             Requested size: 426.39256pt x 266.49608pt.
- [3 <./figures/velocity_B.png> <./figures/velocity_C.png>] [4 <./figures/velocity_D.png>] (output/report.aux)
+ [4 <./figures/velocity_B.png> <./figures/velocity_C.png>] [5 <./figures/velocity_D1.png> <./figures/velocity_D.png>] (output/report.aux)
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27019 strings out of 476025
- 522847 string characters out of 5790017
+ 27038 strings out of 476025
+ 523228 string characters out of 5790017
  1874388 words of memory out of 5000000
- 46998 multiletter control sequences out of 15000+600000
+ 47012 multiletter control sequences out of 15000+600000
  526089 words of font info for 82 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  83i,12n,89p,552b,772s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on output/report.pdf (5 pages, 816179 bytes).
+Output written on output/report.pdf (6 pages, 1020529 bytes).
 PDF statistics:
- 145 PDF objects out of 1000 (max. 8388607)
- 95 compressed objects within 1 object stream
- 19 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 155 PDF objects out of 1000 (max. 8388607)
+ 100 compressed objects within 1 object stream
+ 22 named destinations out of 1000 (max. 500000)
+ 43 words of extra memory for PDF output out of 10000 (max. 10000000)
 
