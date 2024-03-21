@@ -30,7 +30,8 @@ anim = False  # Save animation
 
 
 Pr = 0.71
-Re = 100
+# Specify which Re cases to run:
+cases = [250]  #Re-number
 # Ri = 0. 
 dt = 0.001
 Tf = 50
@@ -94,7 +95,6 @@ if (ig>0) and anim:
 tic()
 
 #Define probe
-cases = [25,250,5000]
 uvel = np.zeros((Nit+1, len(cases)))
 
 for i, Re in enumerate(cases):
@@ -180,7 +180,7 @@ for i, Re in enumerate(cases):
     plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
     plt.savefig(f'velocity_RE{Re}.png')
 
-
+print(Ua.shape)
 """
 """
 #%% Compute divergence on cell centres
