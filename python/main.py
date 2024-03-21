@@ -22,16 +22,16 @@ pylab.rcParams.update(params)
 
 from DD import DD
 from avg import avg
-from src import tic, toc
+from src import tic, toc, extract
 
 #%% Simulation parameters
 
 anim = False  # Save animation
-
+compare_with_openfoam = True
 
 Pr = 0.71
 # Specify which Re cases to run:
-cases = [250]  #Re-number
+cases = [25,250,5000]  #Re-number
 # Ri = 0. 
 dt = 0.001
 Tf = 50
@@ -180,11 +180,44 @@ for i, Re in enumerate(cases):
     plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
     plt.savefig(f'velocity_RE{Re}.png')
 
-print(Ua.shape)
+    '''Compare with openfoam solution'''
+    if compare_with_openfoam:
+        list1 = ['A', 'B', 'C']
+        Uo, Vo = extract(list1[i])
+        vel_amp = np.sqrt(Ua**2+Va**2).T[:-1, :-1]
+        vel_amp_o = np.sqrt(Uo**2+Vo**2)[:-1, :-1]
+        #Print relative norm
+        rel_error = np.linalg.norm(vel_amp-vel_amp_o)/np.linalg.norm(vel_amp)
+        print(rel_error)
+
+        plt.figure()
+        normalizer = matplotlib.colors.Normalize(0,0.7)
+        plt.contourf(x,y,np.sqrt(Uo**2+Vo**2),20,norm = normalizer, cmap = "inferno")
+        plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
+        plt.gca().set_aspect(1.)
+        plt.colorbar(norm = normalizer, cmap = "inferno")
+        plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
+        plt.savefig(f'velocity_RE{Re}_OF.png')
+
+        # Over_line plot
+        line = np.diagonal(vel_amp)
+        line_OF = np.diagonal(vel_amp_o)
+
+        plt.figure()
+        plt.title(f"Plot over diagonal line, Re = {Re}")
+        plt.plot(line, label = "Python solution")
+        plt.plot(line_OF, label = "OpenFOAM solution")
+        plt.xlabel("diagonal index")
+        plt.ylabel("Velocity magnitude")
+        plt.legend()
+        plt.grid()
+        plt.savefig(f'overline_RE{Re}.png')
+        
 """
 """
 #%% Compute divergence on cell centres
 
+"""
 # compute divergence on cell centres
 div = (np.diff( np.vstack( (uW,U, uE)),axis=0)/hx + np.diff( np.hstack(( vS, V, vN)),axis=1)/hy)
 plt.figure()
@@ -194,6 +227,7 @@ plt.colorbar(norm = normalizer, cmap = "inferno")
 plt.title(f'Divergence at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
 plt.savefig('divergence.png')
 plt.show()
+"""
 
 plt.figure()
 plt.plot(np.linspace(0,Tf,int(Tf/dt)+1), uvel)

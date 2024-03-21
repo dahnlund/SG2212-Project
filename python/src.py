@@ -15,7 +15,7 @@ def toc():
 
 def extract(case = 'A'):
     # Open the file
-    with open('your_file_path.txt', 'r') as file:
+    with open(f'openfoam_files/50_{case}/U', 'r') as file:
         lines = file.readlines()
 
     # Find the index where the internalField starts
@@ -25,7 +25,7 @@ def extract(case = 'A'):
     num_vectors = int(lines[start_index + 1])
 
     # Extract the lines containing vectors
-    vector_lines = lines[start_index + 2:start_index + 2 + num_vectors]
+    vector_lines = lines[start_index + 2:start_index + 2 + num_vectors+1]
 
     # Initialize a list to store valid vectors
     valid_vectors = []
@@ -37,7 +37,16 @@ def extract(case = 'A'):
             valid_vectors.append(vector)
 
     # Convert the list of valid vectors into a NumPy array
+    
     vectors = np.array(valid_vectors)
 
-    # Print the extracted vectors
-    print(vectors)
+    matrixsize = int(np.sqrt(len(vectors[:,0])))
+    U = vectors[:,0].reshape((matrixsize, matrixsize))
+    V = vectors[:,1].reshape((matrixsize, matrixsize))
+
+    return U,V
+
+if __name__ == '__main__':
+    U, V =  extract('A')
+    print(U.shape)
+    print(V.shape)
