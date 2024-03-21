@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1710847919 "/Users/david/KTH/SG2212-Project/report.tex" "output/report.pdf" "report" 1710847923 0
-  "/Users/david/KTH/SG2212-Project/report.tex" 1710847922 6538 ada1dcaee8c4ccb977c8da77ff8d5013 ""
+["pdflatex"] 1711013926 "/Users/david/KTH/SG2212-Project/report.tex" "output/report.pdf" "report" 1711013928 0
+  "/Users/david/KTH/SG2212-Project/report.tex" 1711013925 6538 ada1dcaee8c4ccb977c8da77ff8d5013 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
@@ -210,14 +210,14 @@
   "/usr/local/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1706091767 7883454 113955856fc282e92b687c387f147c75 ""
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
   "figures/plot1.png" 1710847899 42405 06b705006fd084aca7b2601d7fec9e02 ""
-  "figures/velocity_A.png" 1710780992 215355 20b1205c8ce3a48fff5fd41bcad4c2d4 ""
-  "figures/velocity_B.png" 1710781200 232851 e62d895d5bc45ea153bb2477c19346bb ""
-  "figures/velocity_C.png" 1710781941 253240 515a09505166a690a2e3ef70e3261fdc ""
+  "figures/velocity_A.png" 1711013922 134466 f85a141e2349ba02d7603e9190c37bc9 ""
+  "figures/velocity_B.png" 1711013922 144891 9fea763729187f76fab66c2a5922ee9b ""
+  "figures/velocity_C.png" 1711013922 162239 71c907f5be96502314378a6159e76459 ""
   "figures/velocity_D.png" 1710783766 233689 d63e37407b126a15200bef38c936af3c ""
   "figures/velocity_D1.png" 1710841077 236043 a050dad97419585229c40dbd5afd7e03 ""
-  "output/report.aux" 1710847923 2278 f4b30a8f38ebd345c3c5ba739e8625a5 "pdflatex"
-  "output/report.out" 1710847922 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "report.tex" 1710847922 6538 ada1dcaee8c4ccb977c8da77ff8d5013 ""
+  "output/report.aux" 1711013928 2278 f4b30a8f38ebd345c3c5ba739e8625a5 "pdflatex"
+  "output/report.out" 1711013927 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "report.tex" 1711013925 6538 ada1dcaee8c4ccb977c8da77ff8d5013 ""
   (generated)
   "output/report.aux"
   "output/report.log"
