@@ -77,10 +77,6 @@ Lp = sp.kron(sp.eye(Ny, format = 'csc'), DD(Nx,hx), format = 'csc') \
 Lp[0,:] =0; Lp[0,0] = 1;
 Lps_lu = splu(Lp)
 
-#%% Initial conditions
-
-U = np.zeros((Nx-1,Ny))
-V = np.zeros((Nx,Ny-1))
 
 T = 0.5 + \
     namp*(np.random.rand(Nx,Ny)-0.5); 
@@ -100,6 +96,12 @@ tic()
 uvel = np.zeros((Nit+1, len(cases)))
 
 for i, Re in enumerate(cases):
+    
+    #%% Initial conditions
+
+    U = np.zeros((Nx-1,Ny))
+    V = np.zeros((Nx,Ny-1))
+
     print(f"Running case for Re = {Re}")
     for k in tqdm(range(Nit), desc="Iterations"):
         # print("Iteration k=%i time=%.2e" % (k,k*dt))
@@ -180,7 +182,7 @@ for i, Re in enumerate(cases):
     plt.gca().set_aspect(1.)
     plt.colorbar(norm = normalizer, cmap = "inferno")
     plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
-    plt.savefig(f'plots/velocity_RE{Re}.png')
+    plt.savefig(f'./plots/velocity_RE{Re}.png')
 
     # Save Ua and Va to a .mat file
     if save_matrices:
@@ -195,7 +197,7 @@ for i, Re in enumerate(cases):
         vel_amp_o = np.sqrt(Uo**2+Vo**2)[:-1, :-1]
         #Print relative norm
         rel_error = np.linalg.norm(vel_amp-vel_amp_o)/np.linalg.norm(vel_amp)
-        print(rel_error)
+        print(f"Relative error: {rel_error}")
 
         plt.figure()
         normalizer = matplotlib.colors.Normalize(0,0.7)
@@ -203,8 +205,8 @@ for i, Re in enumerate(cases):
         plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
         plt.gca().set_aspect(1.)
         plt.colorbar(norm = normalizer, cmap = "inferno")
-        plt.title(f'plots/Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
-        plt.savefig(f'plots/velocity_RE{Re}_OF.png')
+        plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
+        plt.savefig(f'./plots/velocity_RE{Re}_OF.png')
 
         # Over_line plot
         line = np.diagonal(vel_amp)
@@ -218,7 +220,7 @@ for i, Re in enumerate(cases):
         plt.ylabel("Velocity magnitude")
         plt.legend()
         plt.grid()
-        plt.savefig(f'plots/overline_RE{Re}.png')
+        plt.savefig(f'./plots/overline_RE{Re}.png')
         
 """
 """
@@ -242,4 +244,4 @@ plt.ylabel("U")
 plt.xlabel("time")
 plt.legend(cases)
 plt.grid()
-plt.savefig("plots/plot1.png")
+plt.savefig("./plots/plot1.png")
