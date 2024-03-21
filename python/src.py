@@ -15,7 +15,7 @@ def toc():
 
 def extract(case = 'A'):
     # Open the file
-    with open(f'openfoam_files/50_{case}/U', 'r') as file:
+    with open(f'openfoam_files/100_{case}/U', 'r') as file:
         lines = file.readlines()
 
     # Find the index where the internalField starts

@@ -7,6 +7,7 @@ import matplotlib.animation
 import math 
 import scipy.sparse as sp
 import scipy.linalg as scl
+from scipy.io import savemat
 from tqdm import tqdm
 from scipy.sparse.linalg import splu
 params = {'legend.fontsize': 12,
@@ -28,17 +29,18 @@ from src import tic, toc, extract
 
 anim = False  # Save animation
 compare_with_openfoam = True
+save_matrices = True
 
 Pr = 0.71
 # Specify which Re cases to run:
 cases = [25,250,5000]  #Re-number
 # Ri = 0. 
-dt = 0.001
+dt = 0.0005
 Tf = 50
 Lx = 1.
 Ly = 1.
-Nx = 50
-Ny = 50
+Nx = 100
+Ny = 100
 namp = 0.
 ig = 20
 
@@ -157,7 +159,7 @@ for i, Re in enumerate(cases):
             writer.grab_frame()
         
         uvel[k+1, i] = U[int(Nx/2), int(Ny/2)] #Save data in the middle of the domain
-
+        
 
     # finalise progress bar
     print(' done. Iterations k=%i time=%.2f' % (k+1,k*dt))
@@ -178,7 +180,12 @@ for i, Re in enumerate(cases):
     plt.gca().set_aspect(1.)
     plt.colorbar(norm = normalizer, cmap = "inferno")
     plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
-    plt.savefig(f'velocity_RE{Re}.png')
+    plt.savefig(f'plots/velocity_RE{Re}.png')
+
+    # Save Ua and Va to a .mat file
+    if save_matrices:
+        data = {"Ua": Ua, "Va": Va}
+        savemat(f"U_V_RE{Re}.mat", data)
 
     '''Compare with openfoam solution'''
     if compare_with_openfoam:
@@ -196,8 +203,8 @@ for i, Re in enumerate(cases):
         plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
         plt.gca().set_aspect(1.)
         plt.colorbar(norm = normalizer, cmap = "inferno")
-        plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
-        plt.savefig(f'velocity_RE{Re}_OF.png')
+        plt.title(f'plots/Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
+        plt.savefig(f'plots/velocity_RE{Re}_OF.png')
 
         # Over_line plot
         line = np.diagonal(vel_amp)
@@ -211,7 +218,7 @@ for i, Re in enumerate(cases):
         plt.ylabel("Velocity magnitude")
         plt.legend()
         plt.grid()
-        plt.savefig(f'overline_RE{Re}.png')
+        plt.savefig(f'plots/overline_RE{Re}.png')
         
 """
 """
@@ -235,4 +242,4 @@ plt.ylabel("U")
 plt.xlabel("time")
 plt.legend(cases)
 plt.grid()
-plt.savefig("plot1.png")
+plt.savefig("plots/plot1.png")
