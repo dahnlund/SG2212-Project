@@ -29,13 +29,16 @@ from src import tic, toc
 anim = False  # Save animation
 
 
-Re = 100000
+Pr = 0.71
+Re = 100
+# Ri = 0. 
 dt = 0.001
 Tf = 50
 Lx = 1.
 Ly = 1.
 Nx = 50
 Ny = 50
+namp = 0.
 ig = 20
 
 #%% Discretization in space and time, and definition of boundary conditions
@@ -57,6 +60,9 @@ uW = avg(y)*0;  uW = uW[np.newaxis,:];       vW = y*0;  vW = vW[np.newaxis,:];
 uE = avg(y)*0;  uE = uE[np.newaxis,:];       vE = y*0;    vE = vE[np.newaxis,:];
 
 
+
+tN = 100; tS = 10
+
 #%% Pressure correction and pressure Poisson equation
 
 # Compute system matrices for pressure 
@@ -73,6 +79,9 @@ Lps_lu = splu(Lp)
 U = np.zeros((Nx-1,Ny))
 V = np.zeros((Nx,Ny-1))
 
+T = 0.5 + \
+    namp*(np.random.rand(Nx,Ny)-0.5); 
+
 #%% Main time-integration loop. Write output file "cavity.mp" if
 
 if (ig>0) and anim:
@@ -85,7 +94,7 @@ if (ig>0) and anim:
 tic()
 
 #Define probe
-cases = [100000]
+cases = [25,250,5000]
 uvel = np.zeros((Nit+1, len(cases)))
 
 for i, Re in enumerate(cases):
@@ -156,22 +165,22 @@ for i, Re in enumerate(cases):
 
     if (ig>0) and anim:
         writer.finish()
+    #%% Visualization of the flow fiels at the end time
 
-#%% Visualization of the flow fiels at the end time
+    Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
+    Va = np.vstack((vW,avg(np.hstack((vS,V,
+                                        vN)),0),vE));
+    plt.figure()
+    normalizer = matplotlib.colors.Normalize(0,0.7)
+    plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20,norm = normalizer, cmap = "inferno")
+    plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
+    #plt.scatter(x[int(Nx/2)], y[int(Ny/2)], color='red') 
+    plt.gca().set_aspect(1.)
+    plt.colorbar(norm = normalizer, cmap = "inferno")
+    plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
+    plt.savefig(f'velocity_RE{Re}.png')
 
-Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
-Va = np.vstack((vW,avg(np.hstack((vS,V,
-                                  vN)),0),vE));
-plt.figure()
-normalizer = matplotlib.colors.Normalize(0,0.7)
-plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20,norm = normalizer, cmap = "inferno")
-plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
-plt.scatter(x[int(Nx/2)], y[int(Ny/2)], color='red') 
-plt.gca().set_aspect(1.)
-plt.colorbar(norm = normalizer, cmap = "inferno")
-plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
-plt.savefig('velocity.png')
-plt.show()
+
 """
 """
 #%% Compute divergence on cell centres
@@ -179,7 +188,7 @@ plt.show()
 # compute divergence on cell centres
 div = (np.diff( np.vstack( (uW,U, uE)),axis=0)/hx + np.diff( np.hstack(( vS, V, vN)),axis=1)/hy)
 plt.figure()
-plt.pcolor(avg(x),avg(y),div.T, cmap = "inferno")
+plt.pcolor(avg(x),avg(y),div.T, cmap = "inferno")#,shading='nearest')
 plt.gca().set_aspect(1.)
 plt.colorbar(norm = normalizer, cmap = "inferno")
 plt.title(f'Divergence at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
