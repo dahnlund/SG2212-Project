@@ -27,22 +27,37 @@ from src import tic, toc, extract
 
 #%% Simulation parameters
 
+lid_driven_cavity = True
 anim = False  # Save animation
 compare_with_openfoam = True
 save_matrices = True
 
-Pr = 0.71
-# Specify which Re cases to run:
-cases = [25,250,5000]  #Re-number
-# Ri = 0. 
-dt = 0.0005
-Tf = 50
-Lx = 1.
-Ly = 1.
-Nx = 100
-Ny = 100
-namp = 0.
-ig = 20
+if lid_driven_cavity:
+    Pr = 0.71
+    # Specify which Re cases to run:
+    cases = [25,250,5000]  #Re-number
+    # Ri = 0. 
+    dt = 0.0005
+    Tf = 50
+    Lx = 1.
+    Ly = 1.
+    Nx = 100
+    Ny = 100
+    namp = 0.
+    ig = 20
+else:
+    Pr = 0.71;     #Prandtl number
+    Ra = 20000;      # Rayleigh number
+    Re = 1./Pr;    # Reynolds number
+    Ri = Ra*Pr;    # Richardson number
+    dt = 0.0005;   # time step
+    Tf = 20;       # final time
+    Lx = 10.;      # width of box
+    Ly = 1;        # height of box
+    Nx = 120;      # number of cells in x
+    Ny = 20;      #number of cells in y
+    namp = 0.
+    ig = 100;      # number of iterations between output
 
 #%% Discretization in space and time, and definition of boundary conditions
 
@@ -64,7 +79,7 @@ uE = avg(y)*0;  uE = uE[np.newaxis,:];       vE = y*0;    vE = vE[np.newaxis,:];
 
 
 
-tN = 100; tS = 10
+tN = 1; tS = 0
 
 #%% Pressure correction and pressure Poisson equation
 
@@ -77,9 +92,6 @@ Lp = sp.kron(sp.eye(Ny, format = 'csc'), DD(Nx,hx), format = 'csc') \
 Lp[0,:] =0; Lp[0,0] = 1;
 Lps_lu = splu(Lp)
 
-
-T = 0.5 + \
-    namp*(np.random.rand(Nx,Ny)-0.5); 
 
 #%% Main time-integration loop. Write output file "cavity.mp" if
 
@@ -101,6 +113,9 @@ for i, Re in enumerate(cases):
 
     U = np.zeros((Nx-1,Ny))
     V = np.zeros((Nx,Ny-1))
+
+    T = (tN - tS) * np.ones(avg(x.T, axis=0).shape) * avg(y, axis=1) \
+        + Tbottom + namp*np.random.rand((Nx,Ny))
 
     print(f"Running case for Re = {Re}")
     for k in tqdm(range(Nit), desc="Iterations"):

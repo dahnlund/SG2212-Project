@@ -57,8 +57,8 @@ else
   Re = 1./Pr;    % Reynolds number
   Ri = Ra*Pr;    % Richardson number
   
-  dt = 0.00005;   % time step
-  Tf = 20;       % final time
+  dt = 0.0005;   % time step
+  Tf = 2;       % final time
   Lx = 10.;      % width of box
   Ly = 1;        % height of box
   Nx = 120;      % number of cells in x
@@ -107,11 +107,10 @@ Tser = [];
 Lp = Lap(Nx, Ny, dx, dy);
 % Set one Dirichlet value to fix pressure in that point
 Lp(1,:) = zeros(1, size(Lp, 2)) ; Lp(1,1) = 1 ;
-Mp = Lp^-1;
-% Here you can pre-compute the LU decomposition
-% [LLp,ULp] = lu(Lp);
+Lp = decomposition(Lp);
 %-----------------------------------------
 
+tic()
 % Progress bar (do not replace the ... )
 fprintf(...
     '[         |         |         |         |         ]\n')
@@ -157,7 +156,8 @@ for k = 1:Nit
    rhs = ((diff( [uW ; U ; uE], 1, 1)/dx) + diff( [vS, V, vN], 1, 2)/dy)/dt;
    rhs(1, 1) = 0;
    rhs = reshape(rhs,Nx*Ny,1);
-   P = Mp*rhs;
+   P = Lp\rhs;
+  
    % alternatively, you can use the pre-computed LU decompositon
    % P = ...;
    % or gmres
@@ -279,3 +279,5 @@ end
 close(Vid)
 %close(Vid2)
 fprintf('\n')
+tend = toc();
+fprintf("Computation time: %f", tend)
