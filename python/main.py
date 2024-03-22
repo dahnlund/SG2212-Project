@@ -30,8 +30,8 @@ from src import tic, toc, extract
 lid_driven_cavity = True
 anim = False  # Save animation
 compare_with_openfoam = True
-save_matrices = True
-use_stored_data = False
+save_matrices = False
+use_stored_data = True
 
 
 if lid_driven_cavity:
@@ -119,8 +119,8 @@ for i, Re in enumerate(cases):
     U = np.zeros((Nx-1,Ny))
     V = np.zeros((Nx,Ny-1))
 
-    T = ((Tbottom - Ttop) * np.ones(avg(x).shape)[np.newaxis,:] * avg(y)[:, np.newaxis]).T \
-        + Tbottom + namp*np.random.rand(Nx,Ny)
+    #T = ((Tbottom - Ttop) * np.ones(avg(x).shape)[np.newaxis,:] * avg(y)[:, np.newaxis]).T \
+        #+ Tbottom + namp*np.random.rand(Nx,Ny)
 
     print(f"Running case for Re = {Re}")
     for k in tqdm(range(Nit), desc="Iterations"):
@@ -169,6 +169,8 @@ for i, Re in enumerate(cases):
         U = U - dt*np.diff(P, axis = 0)/hx;
         V = V - dt*np.diff(P, axis = 1)/hy; 
 
+
+        
         # Temperature equation
         # IF TEMPERATURE:
         Te = np.hstack((Tbottom+0*T[:,-1][:,np.newaxis], T, (2*Ttop-T[:,-1])[:,np.newaxis]))
@@ -182,7 +184,7 @@ for i, Re in enumerate(cases):
             +(np.diff(Te[:, 1:-1], axis = 0, n = 2)/hx**2 + np.diff(Te[1:-1, :], axis = 1, n = 2)/hy**2)
             
         T = T + dt*H
-
+        
         V = V+Ra*Pr*avg(T, 1)*dt;
         
         if (ig>0 and np.floor(k/ig)==k/ig and anim):
@@ -217,6 +219,7 @@ for i, Re in enumerate(cases):
         T = mat['T']
         x = np.linspace(0,Lx, Ua.shape[0])
         y = np.linspace(0,Ly, Va.shape[1])
+        k = Nit
 
     else:
         Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
@@ -236,7 +239,7 @@ for i, Re in enumerate(cases):
     plt.gca().set_aspect(1.)
     plt.colorbar(norm = normalizer, cmap = "inferno")
     plt.title(f'Velocity at t={k*dt:.2f}, Re = {np.round(Re,3)}, N = {Nx}')
-    plt.savefig(f'./plots/velocity_RE{np.round(Re,3)}.png')
+    plt.savefig(f'./plots/velocity_RE{np.round(Re,3)}.png', bbox_inches='tight')
    
 
     
@@ -247,8 +250,8 @@ for i, Re in enumerate(cases):
         plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
     plt.gca().set_aspect(1.)
     plt.colorbar(norm = normalizer, cmap = "inferno")
-    plt.savefig(f'./plots/temp.png')
-    
+    plt.savefig(f'./plots/temp.png', bbox_inches='tight')
+   
     # Save Ua and Va to a .mat file
     if save_matrices:
         data = {"Ua": Ua, "Va": Va, "T": T}
@@ -271,7 +274,7 @@ for i, Re in enumerate(cases):
         plt.gca().set_aspect(1.)
         plt.colorbar(norm = normalizer, cmap = "inferno")
         plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
-        plt.savefig(f'./plots/velocity_RE{Re}_OF.png')
+        plt.savefig(f'./plots/velocity_RE{Re}_OF.png', bbox_inches='tight')
 
         # Over_line plot
         line = np.diagonal(vel_amp)
@@ -285,14 +288,18 @@ for i, Re in enumerate(cases):
         plt.ylabel("Velocity magnitude")
         plt.legend()
         plt.grid()
-        plt.savefig(f'./plots/overline_RE{Re}.png')
+        plt.savefig(f'./plots/overline_RE{Re}.png', bbox_inches='tight')
         
 
-
+if use_stored_data:
+    mat = loadmat(f'diag_data.mat')
+    # Access variables from the .mat file
+    uvel = mat['uvel']
+    t = mat['t'][0]
 plt.figure()
-plt.plot(np.linspace(0,Tf,int(Tf/dt)+1), uvel)
+plt.plot(t, uvel)
 plt.ylabel("U")
 plt.xlabel("time")
 plt.legend(cases)
 plt.grid()
-plt.savefig("./plots/plot1.png")
+plt.savefig("./plots/plot1.png", bbox_inches='tight')
