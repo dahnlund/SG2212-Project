@@ -20,29 +20,30 @@ clear J i j
 %------------------------------------------
 % dots = zeros(100, 100, 3); dots(:,1,1) = rand(100, 1); dots(:,1,2) = rand(100,1);
 lid_driven_cavity=0;
+record = 0;
 
 if (lid_driven_cavity==1)
   % Parameters for test case I: Lid-driven cavity
   % The Richardson number is zero, i.e. passive scalar.
   
   Pr = 0.71;     % Prandtl number
-  Re = 4000;      % Reynolds number
+  Re = 25;      % Reynolds number
   Ri = 0.;       % Richardson number
   Ra = 1705;      % Rayleigh number
   
-  dt = 0.0001;      % time step
+  dt = 0.0069715;      % time step
   Tf = 50;       % final time
   Lx = 1;        % width of box
   Ly = 1;        % height of box
-  Nx = 50;      % number of cells in x
-  Ny = 50;      % number of cells in y
-  ig = 100;      % number of iterations between output
+  Nx = 30;      % number of cells in x
+  Ny = 30;      % number of cells in y
+  ig = 50;      % number of iterations between output
   
   % Boundary and initial conditions:
   Utop = 1.; 
   Ubottom = 0.;
   % IF TEMPERATURE:
-  Tbottom = 1.; Ttop = 0.;
+  Tbottom = 0.; Ttop = 0.;
   namp = 0.;
 else
   % Parameters for test case II: Rayleigh-Bénard convection
@@ -52,13 +53,13 @@ else
   % Note the alternative scaling for convection problems.
     
   Pr = 0.71;     % Prandtl number
-  Ra = 20000;      % Rayleigh number
+  Ra = 50000;      % Rayleigh number
 
   Re = 1./Pr;    % Reynolds number
   Ri = Ra*Pr;    % Richardson number
   
-  dt = 0.0005;   % time step
-  Tf = 2;       % final time
+  dt = 0.00005;   % time step
+  Tf = 20;       % final time
   Lx = 10.;      % width of box
   Ly = 1;        % height of box
   Nx = 120;      % number of cells in x
@@ -66,10 +67,10 @@ else
   ig = 100;      % number of iterations between output
   
   % Boundary and initial conditions:
-  Utop = 1; Ttop = 1.;
-  Ubottom = 0.; Tbottom = 0;
+  Utop = 0;
+  Ubottom = 0.;
   % IF TEMPERATURE:
-  %%%%%%%%%Tbottom = 1.; Ttop = 0.;
+  Tbottom = 1.; Ttop = 0.;
   namp = 0.;
 end
 
@@ -108,9 +109,11 @@ Lp = Lap(Nx, Ny, dx, dy);
 % Set one Dirichlet value to fix pressure in that point
 Lp(1,:) = zeros(1, size(Lp, 2)) ; Lp(1,1) = 1 ;
 Lp = decomposition(Lp);
+% Mp = Lp^-1;
+% Here you can pre-compute the LU decomposition
+% [LLp,ULp] = lu(Lp);
 %-----------------------------------------
 
-tic()
 % Progress bar (do not replace the ... )
 fprintf(...
     '[         |         |         |         |         ]\n')
@@ -119,7 +122,9 @@ fprintf(...
 
 % Main loop over iterations
 f1 = figure("Position",[30 30 1000 500]);
-Vid = VideoWriter(strcat("result_simu_PV.mp4"),'MPEG-4'); open(Vid)
+if record == 1
+    Vid = VideoWriter(strcat("result_simu_PV.mp4"),'MPEG-4'); open(Vid)
+end
 %Vid2 = VideoWriter(strcat("result_simu_V.mp4"),'MPEG-4'); open(Vid2)
 for k = 1:Nit
      
@@ -157,7 +162,6 @@ for k = 1:Nit
    rhs(1, 1) = 0;
    rhs = reshape(rhs,Nx*Ny,1);
    P = Lp\rhs;
-  
    % alternatively, you can use the pre-computed LU decompositon
    % P = ...;
    % or gmres
@@ -172,7 +176,7 @@ for k = 1:Nit
    
    % Temperature equation
    % IF TEMPERATURE:
-   Te = [2*tS-T(:,1), T, 2*tN-T(:,end)];
+   Te = [tS, T, tN];
    Te = [Te(2,:); Te; Te(end-1, :)];
    % IF TEMPERATURE:
    Tu = avg(avg(Te, 1), 2).*avg(Ue, 2);
@@ -180,8 +184,7 @@ for k = 1:Nit
    Tv = avg(avg(Te, 1), 2).*avg(Ve, 1);
    % IF TEMPERATURE: 
    H = -avg(diff(Tu, 1, 1), 2)/dx-avg(diff(Tv, 1, 2), 1)/dy+(diff(Te(:, 2:end-1), 2, 1)/dx^2 + diff(Te(2:end-1, :), 2, 2)/dy^2);
-   % IF TEMPERATURE:Te
-  
+   % IF TEMPERATURE:
    T = T + dt*H;
 
    V = V+Ra*Pr*avg(T, 2)*dt;
@@ -225,7 +228,13 @@ for k = 1:Nit
      hold on;
      contourf(ax, avg(x,2),avg(y,2),P', 50, 'LineColor','none');colorbar
      %quiver(ax, x,y,(Ua./Len)',(Va./Len)',.4,'k-')
-     ax.CLim = [-5 5]; ax.Colormap = bone(50);
+     if max(abs(P),[],"all") == 0
+        ax.CLim = [-1 1];
+     else
+        ax.CLim = [-max(abs(P), [], "all") max(abs(P), [], "all")];
+     end
+     ax.Colormap = bone(50);
+     title("Pressure")
      axis equal
 
      if lid_driven_cavity == 1
@@ -233,7 +242,7 @@ for k = 1:Nit
      else
         ax = subplot(3, 1, 1);
      end
-     title(sprintf('Solution at t=%g',k*dt))
+     title(sprintf('Speed at t=%g',k*dt))
      hold on;
      contourf(ax, x,y,sqrt(Ua.^2+Va.^2)',20,'LineColor','none');colorbar
      q = quiver(ax, x,y,(Ua./Len)',(Va./Len)',.4,'k-');
@@ -245,15 +254,21 @@ for k = 1:Nit
         ax = subplot(3, 1, 3);
      end
      hold on;
+     title("Temperature")
      contourf(ax, avg(x,2),avg(y,2),T', 50, 'LineColor','none');colorbar
      %quiver(ax, x,y,(Ua./Len)',(Va./Len)',.4,'k-')
-     ax.CLim = [min(Tbottom, Ttop), max(Tbottom, Ttop)]; ax.Colormap = flip(hot(50));
+     if Ttop == Tbottom
+         ax.CLim = [-1, 1];
+     else
+        ax.CLim = [min(Tbottom, Ttop), max(Tbottom, Ttop)]; ax.Colormap = jet(50);
+     end
      axis equal
 
      drawnow
-     frame = getframe(gcf);
-     writeVideo(Vid, frame);
-     
+     if record == 1
+         frame = getframe(gcf);
+         writeVideo(Vid, frame);
+     end
      % IF TEMPERATURE: % compute temperature on cell corners
      % IF TEMPERATURE: Ta = ...
      
@@ -280,5 +295,3 @@ end
 close(Vid)
 %close(Vid2)
 fprintf('\n')
-tend = toc();
-fprintf("Computation time: %f", tend)
