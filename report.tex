@@ -166,7 +166,23 @@ a higher number. This is due to the amount of turbulance is greater in the case 
 the intertial forces are greater in comparison to the viscous forces when the $Re$ increases.
 
 To in a more concrete way decide when a steady flow is reached in the location of the probe, the derivative
-of $U$ w.r.t t is taken into account. When this value is
+of $U$ w.r.t t is taken into account. When setting up two conditions, which essentially measures when the relative derivative
+and deviation from the median doesn't overshoot 5\%. With the following lines of code:
+\begin{lstlisting}
+    for col in range(uvel.shape[1]):
+        cond1 = np.abs(uvel[1:,col]-np.median(uvel,axis = 0)[col]) < \
+            0.05 * np.abs(np.median(uvel,axis = 0)[col])
+        cond2 = np.abs(rel_deriv[:,col]) < 0.05
+
+        cond = cond1 * cond2
+\end{lstlisting}
+The following times for steady flow was estimated, when looking at the 
+first time point when both conditions were fulfilled:
+\begin{lstlisting}
+    Time to steady flow when Re = 25: 1.1998011998011997 s
+    Time to steady flow when Re = 250: 13.217413217413217 s
+    Time to steady flow when Re = 5000: 96.35719635719636 s
+\end{lstlisting}
 \subsection*{Question 5}
 Using OpenFoam in each of the cases A-C the following data where obtained: Figure \ref{caseA} shows
 both a solution from the Python implementation as well as OpenFOAM solution with the data visualized in matplotlib.
@@ -258,17 +274,12 @@ Comparing the $L_2$-norm between the different steady solutions we got the follo
     Relative error: 0.09147688319684655
 \end{lstlisting}
 \subsection*{Question 6}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width = \textwidth]{plots/velocity_D.png}
-    \caption{Case D}
-    \label{caseD1}
-\end{figure}
+When also including a lower wall with the same velocity as the upper lid, the following solution was
+obtained at $T= 50$:
 \begin{figure}[H]
     \centering
     \includegraphics[width = \textwidth]{plots/velocity_D1.png}
-    \caption{Bonus case with even higher $Re$}
-    \label{caseD}
+    \caption{Case D}
+    \label{caseD1}
 \end{figure}
 \end{document}
