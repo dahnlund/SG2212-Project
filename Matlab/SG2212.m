@@ -66,10 +66,10 @@ else
   ig = 100;      % number of iterations between output
   
   % Boundary and initial conditions:
-  Utop = 0; Ttop = 1.;
+  Utop = 1; Ttop = 1.;
   Ubottom = 0.; Tbottom = 0;
   % IF TEMPERATURE:
-  Tbottom = 1.; Ttop = 0.;
+  %%%%%%%%%Tbottom = 1.; Ttop = 0.;
   namp = 0.;
 end
 
@@ -180,7 +180,8 @@ for k = 1:Nit
    Tv = avg(avg(Te, 1), 2).*avg(Ve, 1);
    % IF TEMPERATURE: 
    H = -avg(diff(Tu, 1, 1), 2)/dx-avg(diff(Tv, 1, 2), 1)/dy+(diff(Te(:, 2:end-1), 2, 1)/dx^2 + diff(Te(2:end-1, :), 2, 2)/dy^2);
-   % IF TEMPERATURE:
+   % IF TEMPERATURE:Te
+  
    T = T + dt*H;
 
    V = V+Ra*Pr*avg(T, 2)*dt;

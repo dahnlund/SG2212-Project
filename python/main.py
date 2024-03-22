@@ -29,35 +29,37 @@ from src import tic, toc, extract
 
 lid_driven_cavity = True
 anim = False  # Save animation
-compare_with_openfoam = True
-save_matrices = True
+compare_with_openfoam = False
+save_matrices = False
 
 if lid_driven_cavity:
-    Pr = 0.71
+    Pr = 0.71     #Prandtl number
+    Ra = 1705      # Rayleigh number
+    Ri = 0
     # Specify which Re cases to run:
-    cases = [25,250,5000]  #Re-number
+    cases = [250]  #Re-number
     # Ri = 0. 
-    dt = 0.0005
-    Tf = 50
+    dt = 0.0001
+    Tf = 5
     Lx = 1.
     Ly = 1.
-    Nx = 100
-    Ny = 100
+    Nx = 50
+    Ny = 50
     namp = 0.
     ig = 20
 else:
-    Pr = 0.71;     #Prandtl number
-    Ra = 20000;      # Rayleigh number
-    Re = 1./Pr;    # Reynolds number
-    Ri = Ra*Pr;    # Richardson number
-    dt = 0.0005;   # time step
-    Tf = 20;       # final time
-    Lx = 10.;      # width of box
-    Ly = 1;        # height of box
-    Nx = 120;      # number of cells in x
-    Ny = 20;      #number of cells in y
+    Pr = 0.71     #Prandtl number
+    Ra = 20000      # Rayleigh number
+    cases = [1/Pr]    # Reynolds number
+    Ri = Ra*Pr    # Richardson number
+    dt = 0.0005   # time step
+    Tf = 2       # final time
+    Lx = 10      # width of box
+    Ly = 1        # height of box
+    Nx = 120      # number of cells in x
+    Ny = 20      #number of cells in y
     namp = 0.
-    ig = 100;      # number of iterations between output
+    ig = 100      # number of iterations between output
 
 #%% Discretization in space and time, and definition of boundary conditions
 
@@ -71,15 +73,13 @@ hx = x[-1]/(Nx)
 hy = y[-1]/(Ny)
 
 # boundary conditions
-Utop = 1; Ttop = 1.; Tbottom = 0.;
+Utop = 1; Ttop = 0.; Tbottom = 1.;
 uN = x*0 + Utop;  uN = uN[:,np.newaxis];    vN = avg(x)*0;    vN = vN[:,np.newaxis];
 uS = x*0;  uS = uS[:,np.newaxis];         vS = avg(x)*0;  vS = vS[:,np.newaxis];
 uW = avg(y)*0;  uW = uW[np.newaxis,:];       vW = y*0;  vW = vW[np.newaxis,:];
 uE = avg(y)*0;  uE = uE[np.newaxis,:];       vE = y*0;    vE = vE[np.newaxis,:];
 
 
-
-tN = 1; tS = 0
 
 #%% Pressure correction and pressure Poisson equation
 
@@ -109,13 +109,13 @@ uvel = np.zeros((Nit+1, len(cases)))
 
 for i, Re in enumerate(cases):
     
-    #%% Initial conditions
+    # Initial conditions
 
     U = np.zeros((Nx-1,Ny))
     V = np.zeros((Nx,Ny-1))
 
-    T = (tN - tS) * np.ones(avg(x.T, axis=0).shape) * avg(y, axis=1) \
-        + Tbottom + namp*np.random.rand((Nx,Ny))
+    T = ((Tbottom - Ttop) * np.ones(avg(x).shape)[np.newaxis,:] * avg(y)[:, np.newaxis]).T \
+        + Tbottom + namp*np.random.rand(Nx,Ny)
 
     print(f"Running case for Re = {Re}")
     for k in tqdm(range(Nit), desc="Iterations"):
@@ -161,6 +161,20 @@ for i, Re in enumerate(cases):
         U = U - dt*np.diff(P, axis = 0)/hx;
         V = V - dt*np.diff(P, axis = 1)/hy; 
 
+        # Temperature equation
+        # IF TEMPERATURE:
+        Te = np.hstack(((2*Tbottom-T[:,0])[:,np.newaxis], T, (2*Ttop-T[:,-1])[:,np.newaxis]))
+        Te = np.vstack((Te[1,:], Te, Te[-2, :]))
+
+        Tu = avg(avg(Te, 0), 1)*avg(Ue, 1)
+
+        Tv = avg(avg(Te, 0), 1)*avg(Ve, 0)
+
+        H = -avg(np.diff(Tu, axis = 0), 1)/hx-avg(np.diff(Tv, axis = 1), 0)/hy\
+            +(np.diff(Te[:, 1:-1], axis = 0, n = 2)/hx**2 + np.diff(Te[1:-1, :], axis = 1, n = 2)/hy**2)
+        T = T + dt*H
+
+        V = V+Ra*Pr*avg(T, 1)*dt;
         
         if (ig>0 and np.floor(k/ig)==k/ig and anim):
             Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
@@ -189,6 +203,9 @@ for i, Re in enumerate(cases):
     Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
     Va = np.vstack((vW,avg(np.hstack((vS,V,
                                         vN)),0),vE));
+    T = np.hstack((T, (2*Ttop-T[:,-1])[:,np.newaxis]))
+    T = np.vstack((T, T[-2, :]))
+
     plt.figure()
     normalizer = matplotlib.colors.Normalize(0,0.7)
     plt.contourf(x,y,np.sqrt(Ua**2+Va**2).T,20,norm = normalizer, cmap = "inferno")
@@ -198,6 +215,15 @@ for i, Re in enumerate(cases):
     plt.colorbar(norm = normalizer, cmap = "inferno")
     plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
     plt.savefig(f'./plots/velocity_RE{Re}.png')
+
+    plt.figure()
+    normalizer = matplotlib.colors.Normalize(0,0.7)
+    plt.contourf(x,y,T.T,20,norm = normalizer, cmap = "inferno")
+    plt.quiver(x,y,Ua.T,Va.T,norm = normalizer, cmap = "inferno")
+    #plt.scatter(x[int(Nx/2)], y[int(Ny/2)], color='red') 
+    plt.gca().set_aspect(1.)
+    plt.colorbar(norm = normalizer, cmap = "inferno")
+    plt.savefig(f'./plots/temp.png')
 
     # Save Ua and Va to a .mat file
     if save_matrices:
@@ -237,21 +263,7 @@ for i, Re in enumerate(cases):
         plt.grid()
         plt.savefig(f'./plots/overline_RE{Re}.png')
         
-"""
-"""
-#%% Compute divergence on cell centres
 
-"""
-# compute divergence on cell centres
-div = (np.diff( np.vstack( (uW,U, uE)),axis=0)/hx + np.diff( np.hstack(( vS, V, vN)),axis=1)/hy)
-plt.figure()
-plt.pcolor(avg(x),avg(y),div.T, cmap = "inferno")#,shading='nearest')
-plt.gca().set_aspect(1.)
-plt.colorbar(norm = normalizer, cmap = "inferno")
-plt.title(f'Divergence at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
-plt.savefig('divergence.png')
-plt.show()
-"""
 
 plt.figure()
 plt.plot(np.linspace(0,Tf,int(Tf/dt)+1), uvel)
