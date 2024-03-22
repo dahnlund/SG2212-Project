@@ -169,10 +169,13 @@ To in a more concrete way decide when a steady flow is reached in the location o
 of $U$ w.r.t t is taken into account. When setting up two conditions, which essentially measures when the relative derivative
 and deviation from the median doesn't overshoot 5\%. With the following lines of code:
 \begin{lstlisting}
-    for col in range(uvel.shape[1]):
-        cond1 = np.abs(uvel[1:,col]-np.median(uvel,axis = 0)[col]) < \
-            0.05 * np.abs(np.median(uvel,axis = 0)[col])
-        cond2 = np.abs(rel_deriv[:,col]) < 0.05
+    du_vec = np.diff(u_vec, axis = 0)/np.diff(t)[0]
+    rel_derivative = du_vec/np.abs(np.median(u_vec,axis = 0))
+    
+    for col in range(u_vec.shape[1]):
+        cond1 = np.abs(u_vec[1:,col]-np.median(u_vec,axis = 0)[col]) < \
+            0.05 * np.abs(np.median(u_vec,axis = 0)[col])
+        cond2 = np.abs(rel_derivative[:,col]) < 0.05
 
         cond = cond1 * cond2
 \end{lstlisting}
@@ -185,7 +188,7 @@ first time point when both conditions were fulfilled:
 \end{lstlisting}
 \subsection*{Question 5}
 Using OpenFoam in each of the cases A-C the following data where obtained: Figure \ref{caseA} shows
-both a solution from the Python implementation as well as OpenFOAM solution with the data visualized in matplotlib.
+both a solution from the Python implementation as well as OpenFOAM solution with the data visualized using matplotlib.
 
 \begin{figure}[H]
     \centering
