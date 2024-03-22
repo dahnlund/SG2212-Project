@@ -7,7 +7,7 @@ import matplotlib.animation
 import math 
 import scipy.sparse as sp
 import scipy.linalg as scl
-from scipy.io import savemat
+from scipy.io import savemat, loadmat
 from tqdm import tqdm
 from scipy.sparse.linalg import splu
 params = {'legend.fontsize': 12,
@@ -31,20 +31,22 @@ lid_driven_cavity = True
 anim = False  # Save animation
 compare_with_openfoam = False
 save_matrices = False
+use_stored_data = False
+
 
 if lid_driven_cavity:
     Pr = 0.71     #Prandtl number
     Ra = 1705      # Rayleigh number
     Ri = 0
     # Specify which Re cases to run:
-    cases = [250]  #Re-number
+    cases = [25]  #Re-number
     # Ri = 0. 
-    dt = 0.0001
-    Tf = 5
+    dt = 0.001
+    Tf = 50
     Lx = 1.
     Ly = 1.
-    Nx = 50
-    Ny = 50
+    Nx = 30
+    Ny = 30
     namp = 0.
     ig = 20
 else:
@@ -73,7 +75,7 @@ hx = x[-1]/(Nx)
 hy = y[-1]/(Ny)
 
 # boundary conditions
-Utop = 1; Ttop = 0.; Tbottom = 1.;
+Utop = 1; Ttop = 0.; Tbottom = 0.;
 uN = x*0 + Utop;  uN = uN[:,np.newaxis];    vN = avg(x)*0;    vN = vN[:,np.newaxis];
 uS = x*0;  uS = uS[:,np.newaxis];         vS = avg(x)*0;  vS = vS[:,np.newaxis];
 uW = avg(y)*0;  uW = uW[np.newaxis,:];       vW = y*0;  vW = vW[np.newaxis,:];
@@ -108,7 +110,7 @@ tic()
 uvel = np.zeros((Nit+1, len(cases)))
 
 for i, Re in enumerate(cases):
-    
+
     # Initial conditions
 
     U = np.zeros((Nx-1,Ny))
@@ -119,6 +121,9 @@ for i, Re in enumerate(cases):
 
     print(f"Running case for Re = {Re}")
     for k in tqdm(range(Nit), desc="Iterations"):
+        if use_stored_data:
+            print("Using stored data -> exiting loop")
+            break
         # print("Iteration k=%i time=%.2e" % (k,k*dt))
 
         # include all boundary points for u and v (linear extrapolation
@@ -200,11 +205,22 @@ for i, Re in enumerate(cases):
         writer.finish()
     #%% Visualization of the flow fiels at the end time
 
-    Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
-    Va = np.vstack((vW,avg(np.hstack((vS,V,
-                                        vN)),0),vE));
-    T = np.hstack((T, (2*Ttop-T[:,-1])[:,np.newaxis]))
-    T = np.vstack((T, T[-2, :]))
+    if use_stored_data:
+        mat = loadmat(f'U_V_RE{Re}.mat')
+        # Access variables from the .mat file
+        Ua= mat['Ua']
+        Va = mat['Va']
+        x = np.linspace(0,Lx, Ua.shape[0])
+        y = np.linspace(0,Ly, Va.shape[1])
+
+    else:
+        Ua = np.hstack( (uS,avg(np.vstack((uW,U,uE)),1),uN));
+        Va = np.vstack((vW,avg(np.hstack((vS,V,
+                                            vN)),0),vE));
+        
+
+        T = np.hstack((T, (2*Ttop-T[:,-1])[:,np.newaxis]))
+        T = np.vstack((T, T[-2, :]))
 
     plt.figure()
     normalizer = matplotlib.colors.Normalize(0,0.7)
@@ -216,6 +232,7 @@ for i, Re in enumerate(cases):
     plt.title(f'Velocity at t={k*dt:.2f}, Re = {Re}, N = {Nx}')
     plt.savefig(f'./plots/velocity_RE{Re}.png')
 
+    
     plt.figure()
     normalizer = matplotlib.colors.Normalize(0,0.7)
     plt.contourf(x,y,T.T,20,norm = normalizer, cmap = "inferno")
@@ -224,7 +241,7 @@ for i, Re in enumerate(cases):
     plt.gca().set_aspect(1.)
     plt.colorbar(norm = normalizer, cmap = "inferno")
     plt.savefig(f'./plots/temp.png')
-
+    
     # Save Ua and Va to a .mat file
     if save_matrices:
         data = {"Ua": Ua, "Va": Va}
