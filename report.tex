@@ -152,34 +152,105 @@ Experimental stability condition for $\Delta t$
 when integrated up to $T = 50$.
 
 \subsection*{Question 3}
+
 \subsection*{Question 4}
+Placing a probe in the domian centre gives the following velocity $U$ along the time line to $T = 50$:
 \begin{figure}[H]
     \centering
     \includegraphics[width = \textwidth]{plots/plot1.png}
     \caption{$U$ in middle of domain for different $Re$-values}
     \label{plot1}
 \end{figure}
+Clearly the cases with lower Reynold's number converges to a steady flow quicker than the cases with
+a higher number. This is due to the amount of turbulance is greater in the case with higher $Re$; 
+the intertial forces are greater in comparison to the viscous forces when the $Re$ increases.
+
+Judging by the plot in Figure \ref{plot1} the $Re-25$ case 
 \subsection*{Question 5}
-\subsection*{Question 6}
+Using OpenFoam in each of the cases A-C the following data where obtained: Figure \ref{caseA} shows
+both a solution from the Python implementation as well as OpenFOAM solution with the data visualized in matplotlib.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = \textwidth]{plots/velocity_RE25.png}
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/velocity_RE25_OF.png}
+        \caption{OpenFoam solution}
+        \label{caseAof}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/velocity_RE25.png}
+        \caption{Python Solution}
+        \label{caseApy}
+    \end{subfigure}
     \caption{Case A}
     \label{caseA}
 \end{figure}
+For a more detailed comparison we can observe the velocity magnitude along the diagonal of the domain,
+so called a \textit{plot over line} visualization. For case A we have the following:
 \begin{figure}[H]
     \centering
-    \includegraphics[width = \textwidth]{plots/velocity_RE250.png}
+    \includegraphics[width = \textwidth]{plots/overline_RE25.png}
+    \caption{Plot over line (Case A): Python against OpenFOAM}
+\end{figure}
+Likewise we can compare case B and C in a similar manner:
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/velocity_RE250_OF.png}
+        \caption{OpenFoam solution}
+        \label{caseBof}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/velocity_RE250.png}
+        \caption{Python Solution}
+        \label{caseBpy}
+    \end{subfigure}
     \caption{Case B}
     \label{caseB}
 \end{figure}
 \begin{figure}[H]
     \centering
-    \includegraphics[width = \textwidth]{plots/velocity_RE5000.png}
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/velocity_RE5000_OF.png}
+        \caption{OpenFoam solution}
+        \label{caseCof}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/velocity_RE5000.png}
+        \caption{Python Solution}
+        \label{caseCpy}
+    \end{subfigure}
     \caption{Case C}
     \label{caseC}
 \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \textwidth]{plots/overline_RE250.png}
+    \caption{Plot over line (Case B): Python against OpenFOAM}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \textwidth]{plots/overline_RE5000.png}
+    \caption{Plot over line (Case C): Python against OpenFOAM}
+\end{figure}
+We can conclude that the Python and OpenFOAM solutions converges, and notably the largest differences was found close to
+the boundaries.
+
+Comparing the $L_2$-norm between the different steady solutions we got the following data:
+\begin{lstlisting}
+    %%INSERT DATA
+\end{lstlisting}
+\subsection*{Question 6}
+
 \begin{figure}[H]
     \centering
     \includegraphics[width = \textwidth]{plots/velocity_D.png}
