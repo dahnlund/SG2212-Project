@@ -154,7 +154,7 @@ when integrated up to $T = 50$.
 \subsection*{Question 3}
 
 \subsection*{Question 4}
-Placing a probe in the domian centre gives the following velocity $U$ along the time line to $T = 50$:
+Placing a probe in the domian centre gives the following velocity $U$ along the time line to $T = 100$:
 \begin{figure}[H]
     \centering
     \includegraphics[width = \textwidth]{plots/plot1.png}
@@ -165,7 +165,8 @@ Clearly the cases with lower Reynold's number converges to a steady flow quicker
 a higher number. This is due to the amount of turbulance is greater in the case with higher $Re$; 
 the intertial forces are greater in comparison to the viscous forces when the $Re$ increases.
 
-Judging by the plot in Figure \ref{plot1} the $Re-25$ case 
+To in a more concrete way decide when a steady flow is reached in the location of the probe, the derivative
+of $U$ w.r.t t is taken into account. When this value is
 \subsection*{Question 5}
 Using OpenFoam in each of the cases A-C the following data where obtained: Figure \ref{caseA} shows
 both a solution from the Python implementation as well as OpenFOAM solution with the data visualized in matplotlib.
@@ -247,7 +248,14 @@ the boundaries.
 
 Comparing the $L_2$-norm between the different steady solutions we got the following data:
 \begin{lstlisting}
-    %%INSERT DATA
+    Running case for Re = 25
+    Relative error: 0.04912371466615295
+
+    Running case for Re = 250
+    Relative error: 0.05397593894314182
+
+    Running case for Re = 5000
+    Relative error: 0.09147688319684655
 \end{lstlisting}
 \subsection*{Question 6}
 
