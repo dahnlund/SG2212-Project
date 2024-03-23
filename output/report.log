@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  22 MAR 2024 18:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  23 MAR 2024 14:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -760,76 +760,76 @@ Overfull \hbox (5.61183pt too wide) in paragraph at lines 176--177
  []
 
 [3{/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <./plots/plot1.png>]
-<plots/velocity_RE25_OF.png, id=66, 380.8629pt x 328.8285pt>
+<plots/velocity_RE25_OF.png, id=70, 380.8629pt x 328.8285pt>
 File: plots/velocity_RE25_OF.png Graphic file (type png)
 <use plots/velocity_RE25_OF.png>
-Package pdftex.def Info: plots/velocity_RE25_OF.png  used on input line 197.
+Package pdftex.def Info: plots/velocity_RE25_OF.png  used on input line 200.
 (pdftex.def)             Requested size: 202.53906pt x 174.86533pt.
-<plots/velocity_RE25.png, id=67, 380.8629pt x 328.8285pt>
+<plots/velocity_RE25.png, id=71, 380.8629pt x 328.8285pt>
 File: plots/velocity_RE25.png Graphic file (type png)
 <use plots/velocity_RE25.png>
-Package pdftex.def Info: plots/velocity_RE25.png  used on input line 204.
+Package pdftex.def Info: plots/velocity_RE25.png  used on input line 207.
 (pdftex.def)             Requested size: 202.53906pt x 174.86533pt.
-<plots/overline_RE25.png, id=68, 513.117pt x 345.4506pt>
+<plots/overline_RE25.png, id=72, 513.117pt x 345.4506pt>
 File: plots/overline_RE25.png Graphic file (type png)
 <use plots/overline_RE25.png>
-Package pdftex.def Info: plots/overline_RE25.png  used on input line 215.
+Package pdftex.def Info: plots/overline_RE25.png  used on input line 218.
 (pdftex.def)             Requested size: 426.39256pt x 287.07181pt.
  [4 <./plots/velocity_RE25_OF.png> <./plots/velocity_RE25.png>]
-<plots/velocity_RE250_OF.png, id=82, 380.8629pt x 328.8285pt>
+<plots/velocity_RE250_OF.png, id=86, 380.8629pt x 328.8285pt>
 File: plots/velocity_RE250_OF.png Graphic file (type png)
 <use plots/velocity_RE250_OF.png>
-Package pdftex.def Info: plots/velocity_RE250_OF.png  used on input line 223.
+Package pdftex.def Info: plots/velocity_RE250_OF.png  used on input line 226.
 (pdftex.def)             Requested size: 202.53906pt x 174.86533pt.
-<plots/velocity_RE250.png, id=83, 380.8629pt x 328.8285pt>
+<plots/velocity_RE250.png, id=87, 380.8629pt x 328.8285pt>
 File: plots/velocity_RE250.png Graphic file (type png)
 <use plots/velocity_RE250.png>
-Package pdftex.def Info: plots/velocity_RE250.png  used on input line 230.
+Package pdftex.def Info: plots/velocity_RE250.png  used on input line 233.
 (pdftex.def)             Requested size: 202.53906pt x 174.86533pt.
-<plots/velocity_RE5000_OF.png, id=84, 380.8629pt x 328.8285pt>
+<plots/velocity_RE5000_OF.png, id=88, 380.8629pt x 328.8285pt>
 File: plots/velocity_RE5000_OF.png Graphic file (type png)
 <use plots/velocity_RE5000_OF.png>
-Package pdftex.def Info: plots/velocity_RE5000_OF.png  used on input line 241.
+Package pdftex.def Info: plots/velocity_RE5000_OF.png  used on input line 244.
 (pdftex.def)             Requested size: 202.53906pt x 174.86533pt.
-<plots/velocity_RE5000.png, id=85, 380.8629pt x 328.8285pt>
+<plots/velocity_RE5000.png, id=89, 380.8629pt x 328.8285pt>
 File: plots/velocity_RE5000.png Graphic file (type png)
 <use plots/velocity_RE5000.png>
-Package pdftex.def Info: plots/velocity_RE5000.png  used on input line 248.
+Package pdftex.def Info: plots/velocity_RE5000.png  used on input line 251.
 (pdftex.def)             Requested size: 202.53906pt x 174.86533pt.
-<plots/overline_RE250.png, id=86, 513.117pt x 345.4506pt>
+<plots/overline_RE250.png, id=90, 513.117pt x 345.4506pt>
 File: plots/overline_RE250.png Graphic file (type png)
 <use plots/overline_RE250.png>
-Package pdftex.def Info: plots/overline_RE250.png  used on input line 257.
+Package pdftex.def Info: plots/overline_RE250.png  used on input line 260.
 (pdftex.def)             Requested size: 426.39256pt x 287.07181pt.
  [5 <./plots/overline_RE25.png> <./plots/velocity_RE250_OF.png> <./plots/velocity_RE250.png>]
-<plots/overline_RE5000.png, id=96, 513.117pt x 345.4506pt>
+<plots/overline_RE5000.png, id=100, 513.117pt x 345.4506pt>
 File: plots/overline_RE5000.png Graphic file (type png)
 <use plots/overline_RE5000.png>
-Package pdftex.def Info: plots/overline_RE5000.png  used on input line 262.
+Package pdftex.def Info: plots/overline_RE5000.png  used on input line 265.
 (pdftex.def)             Requested size: 426.39256pt x 287.07181pt.
  [6 <./plots/velocity_RE5000_OF.png> <./plots/velocity_RE5000.png> <./plots/overline_RE250.png>]
-<plots/velocity_D1.png, id=107, 578.16pt x 361.35pt>
+<plots/velocity_D1.png, id=111, 578.16pt x 361.35pt>
 File: plots/velocity_D1.png Graphic file (type png)
 <use plots/velocity_D1.png>
-Package pdftex.def Info: plots/velocity_D1.png  used on input line 284.
+Package pdftex.def Info: plots/velocity_D1.png  used on input line 287.
 (pdftex.def)             Requested size: 426.39256pt x 266.49608pt.
  [7 <./plots/overline_RE5000.png>] [8 <./plots/velocity_D1.png>] (output/report.aux)
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27424 strings out of 476025
- 527676 string characters out of 5790017
+ 27427 strings out of 476025
+ 527721 string characters out of 5790017
  1874388 words of memory out of 5000000
  47356 multiletter control sequences out of 15000+600000
  526723 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,12n,89p,552b,1873s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 83i,12n,89p,552b,1259s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on output/report.pdf (9 pages, 1443526 bytes).
+Output written on output/report.pdf (9 pages, 1444172 bytes).
 PDF statistics:
- 224 PDF objects out of 1000 (max. 8388607)
- 151 compressed objects within 2 object streams
- 50 named destinations out of 1000 (max. 500000)
+ 228 PDF objects out of 1000 (max. 8388607)
+ 155 compressed objects within 2 object streams
+ 53 named destinations out of 1000 (max. 500000)
  68 words of extra memory for PDF output out of 10000 (max. 10000000)
 

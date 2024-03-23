@@ -165,27 +165,30 @@ Clearly the cases with lower Reynold's number converges to a steady flow quicker
 a higher number. This is due to the amount of turbulance is greater in the case with higher $Re$; 
 the intertial forces are greater in comparison to the viscous forces when the $Re$ increases.
 
-To in a more concrete way decide when a steady flow is reached in the location of the probe, the derivative
-of $U$ w.r.t t is taken into account. When setting up two conditions, which essentially measures when the relative derivative
-and deviation from the median doesn't overshoot 5\%. With the following lines of code:
+To in a more concrete way decide when a steady flow is reached in the location of the probe, the first and second derivative
+of $U$ w.r.t t is taken into account. When setting up three conditions, which measures when the derivatives
+doesn't overshoot the value 0.001 and deviation from the median doesn't overshoot 5\%. With the following lines of code:
 \begin{lstlisting}
     du_vec = np.diff(u_vec, axis = 0)/np.diff(t)[0]
-    rel_derivative = du_vec/np.abs(np.median(u_vec,axis = 0))
-    
-    for col in range(u_vec.shape[1]):
-        cond1 = np.abs(u_vec[1:,col]-np.median(u_vec,axis = 0)[col]) < \
-            0.05 * np.abs(np.median(u_vec,axis = 0)[col])
-        cond2 = np.abs(rel_derivative[:,col]) < 0.05
+    ddu_vec = np.diff(u_vec, axis = 0, n = 2)/(np.diff(t)[0])**2
 
-        cond = cond1 * cond2
+    for col in range(u_vec.shape[1]):
+        cond1 = np.abs(u_vec[2:,col]-np.median(u_vec,axis = 0)[col]) < \
+            0.05 * np.abs(np.median(u_vec,axis = 0)[col])
+        cond2 = np.abs(du_vec[1:,col]) < 0.001
+        cond3 = np.abs(ddu_vec[:,col]) < 0.001
+
+        cond = cond1*cond2*cond3
+
+        index = np.argmax(cond)
 \end{lstlisting}
-The following times for steady flow was estimated, when looking at the 
-first time point when both conditions were fulfilled:
+the times for steady flow was estimated to be:
 \begin{lstlisting}
-    Time to steady flow when Re = 25: 1.1998011998011997 s
-    Time to steady flow when Re = 250: 13.217413217413217 s
-    Time to steady flow when Re = 5000: 96.35719635719636 s
+    Time to steady flow when Re = 25: 2.165102165102165 s
+    Time to steady flow when Re = 250: 16.342916342916343 s
+    Time to steady flow when Re = 5000: 96.2003962003962 s
 \end{lstlisting}
+This is also marked with red points in Figure \ref{plot1}.
 \subsection*{Question 5}
 Using OpenFoam in each of the cases A-C the following data where obtained: Figure \ref{caseA} shows
 both a solution from the Python implementation as well as OpenFOAM solution with the data visualized using matplotlib.
@@ -262,10 +265,10 @@ Likewise we can compare case B and C in a similar manner:
     \includegraphics[width = \textwidth]{plots/overline_RE5000.png}
     \caption{Plot over line (Case C): Python against OpenFOAM}
 \end{figure}
-We can conclude that the Python and OpenFOAM solutions converges, and notably the largest differences was found close to
-the boundaries.
+We can conclude that the Python and OpenFOAM solutions converges to the same solution, and notably the largest differences was found close to
+the boundaries. In the above plots the boundary point ($L_x,L_y$) was actually excluded due to OpenFOAM didn't include it in the solution.
 
-Comparing the $L_2$-norm between the different steady solutions we got the following data:
+Comparing the relative $L_2$-norm between the different steady solutions (OpenFOAM against Python) we got the following data:
 \begin{lstlisting}
     Running case for Re = 25
     Relative error: 0.04912371466615295
