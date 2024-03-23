@@ -206,6 +206,15 @@ has a correpsonding $a_x$ and $a_y$ value as 1 in both cases.
 Therefore we can write the stability condition for the advective terms as\[
     2\frac{\dt}{h} \le 1
 \]
+
+Comparing the limits for all three cases we get the following:
+\begin{gather*}
+    \text{Convective:  } \dt \le \frac{h}{2},\quad \text{Diffusive:  }\dt \le \frac{Re \cdot h^2}{4}\\
+    \implies A: \quad \dt \le \frac{1/30}{2} \approx 0.01667,\quad \dt \le \frac{25\cdot 1/30^2}{4} \approx 0.006944\\
+    B: \quad \dt \le \frac{1/50}{2} = 0.01,\quad \dt \le \frac{250\cdot 1/50^2}{4} = 0.025\\
+    C:\quad \dt \le \frac{1/100}{2} = 0.005,\quad \dt \le \frac{5000\cdot 1/100^2}{4} = 0.125
+\end{gather*}
+We conclude that as the $Re$-number increases, the advective terms are the ones setting the stability limit.
 \subsection*{Question 3}
 \subsection*{Question 4}
 Placing a probe in the domian centre gives the following velocity $U$ along the time line to $T = 100$:
