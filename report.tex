@@ -36,6 +36,7 @@
 \newcommand{\td}{\tilde}
 \newcommand{\dx}{\Delta x}
 \newcommand{\dt}{\Delta t}
+\newcommand{\p}{\partial}
 \DeclareMathOperator{\Exp}{\text{Exp}}
 \DeclareMathOperator*{\E}{\mathbb{E}}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
@@ -151,8 +152,61 @@ Experimental stability condition for $\Delta t$
 \]
 when integrated up to $T = 50$.
 
-\subsection*{Question 3}
+This empirically found stability condition can now be compared to the theoretical limit presented in the course:
 
+For a general diffusion equation in 2D we have:
+\begin{equation*}
+    \frac{\p u}{\p t} = \nu \left(\frac{\p^2 u}{\p x^2}+ \frac{\p^2 u}{\p y^2}\right)
+\end{equation*}
+Which can be discretized as the following (note that this is a general case, hence no staggered grid):
+\begin{equation}
+    \frac{u^{n+1}_{i,j}-u^{n}_{i,j}}{\dt} = \nu \left[\frac{u^n_{i+1,j}-2u^n_{i,j}+u^n_{i-1,j}}{h_x^2} 
+    + \frac{u^n_{i,j+1}-2u^n_{i,j}+u^n_{i,j-1}}{h_y^2} \right] \label{diffu}
+\end{equation}
+Performing a \textit{von Neumann} analysis on \ref{diffu}, where one proceed as defining 
+\[u_{i,j}^n = \hat{u}^n_{kl}\cdot e^{ik\alpha x_i}\cdot e^{il\beta y_j}\] 
+where $k$ and $l$ are the wave number in $x$ and $y$
+direction respectively, and inserting the expression in the discretized diffusion equation, 
+one eventually end up with the following
+amplification factor:
+\begin{equation}
+    \hat{G} := \frac{\hat{u}^{n+1}_{kl}}{\hat{u}^n_{kl}} = 1+2\frac{\nu \dt}{h_x^2}(\cos(\phi_k)-1)
+    +2\frac{\nu \dt}{h_y^2}(\cos(\phi_l) -1)
+\end{equation}
+where $\phi_k := k\alpha h_x$ and $\phi_l = l\beta h_y$.
+
+Considering the condition for stability: $|\hat{G}| \le 1$, the following condition can be derived:
+\begin{equation}
+    \frac{1}{2} \ge \frac{\nu \dt}{h_x^2} + \frac{\nu \dt}{h_y^2} \label{condd}
+\end{equation}
+In our case, the constant in the general case $\nu$ corresponds to $\frac{1}{Re}$ in our setting.
+
+Inserting this to Equation \ref{condd}, together with the fact that $h_y = h_x = h$ yields the condition:
+\begin{equation}
+    \frac{1}{2} \ge 2\frac{\dt}{Re \cdot h^2}
+\end{equation}
+In Case A we have $N = 30 \implies h = \frac{1}{30}$, $Re = 25$. If we now insert our estimated stablility limit as $\dt$,
+we get the following value:
+\[
+    2\frac{0.006971}{25 \cdot \frac{1}{30^2}} \approx 0.501912
+\]
+\textit{i.e} it above the theoretical limit. If time integrated for longer we would therefore probably get an unstable solution.
+
+For the advective terms, we can arrive at the following stability condition in 2D using the general case:
+\begin{equation*}
+    \frac{\p u}{\p t} + \vec{a}\cdot \nabla \vec{u} = 0 = \frac{\p u}{\p t} + a_x \frac{\p u}{\p x} + + a_y \frac{\p u}{\p y}
+\end{equation*}
+Using a similar \textit{von Neumann} analysis as in the diffusive case, one ends up with the following condition:
+\begin{equation}
+    \frac{\dt |a_x|}{h_x} + \frac{\dt |a_y|}{h_y} \le 1 
+\end{equation}
+which is the sums of the CFL conditions from the separate directions. In our specific setting, the advective terms
+has a correpsonding $a_x$ and $a_y$ value as 1 in both cases.
+
+Therefore we can write the stability condition for the advective terms as\[
+    2\frac{\dt}{h} \le 1
+\]
+\subsection*{Question 3}
 \subsection*{Question 4}
 Placing a probe in the domian centre gives the following velocity $U$ along the time line to $T = 100$:
 \begin{figure}[H]
