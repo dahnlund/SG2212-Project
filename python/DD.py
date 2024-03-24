@@ -31,4 +31,4 @@ def DD(n,h):
     return A
 
 if __name__ == "__main__":  
-    print(DD(5,1).toarray())
+    print(DD(4,1).toarray())

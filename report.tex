@@ -94,7 +94,7 @@ The above expression we can transform into a vector form in size $(N_x, N_y) \ma
 that one step in $y$-direction is equivalent to one row in the matrix \textit{i.e.} $+N_x$ steps.
 
 We can now define the second partial derivative in the separate directions:
-\begin{equation*}
+\begin{equation}
     S_x = \frac{1}{h_x^2}\begin{bmatrix}
         -1&1&\\
         1&-2&1&\\
@@ -109,8 +109,8 @@ We can now define the second partial derivative in the separate directions:
         &&\ddots&\ddots&&
         \\
         &&&1&-1\\
-    \end{bmatrix}
-\end{equation*}
+    \end{bmatrix} \label{lall}
+\end{equation}
 Forming a matrix by the size $(N_x \cdot N_y) \times (N_x \cdot N_y)$ is now done by the kronecker product.
 
 The operation done by the kronecker product essentially does the following in this case. Consider the identity matrix in the shape $N_y\times N_y$ ($I_y$), and the $S_x$ from above. We get:
@@ -167,7 +167,7 @@ Performing a \textit{von Neumann} analysis on \ref{diffu}, where one proceed as 
 \[u_{i,j}^n = \hat{u}^n_{kl}\cdot e^{ik\alpha x_i}\cdot e^{il\beta y_j}\] 
 where $k$ and $l$ are the wave number in $x$ and $y$
 direction respectively, and inserting the expression in the discretized diffusion equation, 
-one eventually end up with the following
+one eventually ends up with the following
 amplification factor:
 \begin{equation}
     \hat{G} := \frac{\hat{u}^{n+1}_{kl}}{\hat{u}^n_{kl}} = 1+2\frac{\nu \dt}{h_x^2}(\cos(\phi_k)-1)
@@ -216,6 +216,49 @@ Comparing the limits for all three cases we get the following:
 \end{gather*}
 We conclude that as the $Re$-number increases, the advective terms are the ones setting the stability limit.
 \subsection*{Question 3}
+In the given lid-driven cavity problem we have the following boundary condition that should be 
+fulfilled in each time point:
+\begin{align*}
+    &u = U_{\text{bottom}},\quad v = 0, \quad (x,y) \in \Gamma_b\\
+    &u = U_{\text{top}},\quad v = 0, \quad (x,y) \in \Gamma_t\\
+    &u = v = 0,\quad (x,y) \in \Gamma_r \cup \Gamma_l\\
+    &\frac{\p p}{\p x_i}n_i = 0, \quad (x,y) \in \Gamma_b \cup \Gamma_t \cup \Gamma_l \cup \Gamma_r
+\end{align*}
+Now, since a staggered grid is used in the discretization, we set these conditions in the following way:
+
+First we have the boundary conditios that we are supposed to look at, to then determine the necessary ghost points.
+\begin{equation}
+    u_{i+\frac{1}{2},\frac{1}{2}}= U_{\text{bottom}},\quad v_{\frac{1}{2},j+\frac{1}{2}} = 0
+\end{equation}
+These boundary conditions are as seen given. We can also set up the two following conditions:
+\begin{gather*}
+    u_{i+\frac{1}{2},\frac{1}{2}} = \frac{u_{i+\frac{1}{2},1}+u_{i+\frac{1}{2},0}}{2} = U_{\text{bottom}}\\
+    v_{\frac{1}{2},j+\frac{1}{2}} = \frac{v_{0,j+\frac{1}{2}} +v_{1,j+\frac{1}{2}} }{2} = 0\\
+    \implies \begin{cases}u_{i+\frac{1}{2},0} = 2U_{\text{bottom}}-u_{i+\frac{1}{2},1}\\
+    v_{0,j+\frac{1}{2}} = 2\cdot 0 -v_{1,j+\frac{1}{2}} = - v_{1,j+\frac{1}{2}} \end{cases}
+\end{gather*}
+where $v_{0,j+\frac{1}{2}}$ and $u_{i+\frac{1}{2},0}$ are the ghost points that we use to fulfill the
+boundare conditions.
+
+Similarily, for the ghost points for the pressure: $p_{0,j}$ and $p_{i,0}$ we proceed as follows:
+
+We have the Neumann condition that the derivative normal to the boundary, at the boundary is zero:
+\begin{gather*}
+    \frac{\p p}{\p n}\vert_{0,j} \approx \frac{p_{1,j}-p_{0,j}}{h_x} = 0\\
+    \frac{\p p}{\p n}\vert_{i,0} \approx \frac{p_{i,1}-p_{i,0}}{h_y} = 0\\
+    \implies \begin{cases}
+        p_{0,j} = p_{1,j}\\
+        p_{i,0} = p_{i,1}
+    \end{cases}
+\end{gather*}
+Combining the above with the Laplace equation for $p$, we get the following:
+\begin{gather*}
+    \frac{p_{0,j}-2p_{1,j}+p_{2,j}}{h_x^2} = \frac{-p_{1,j}+p_{2,j}}{h_x^2}\\
+    \frac{p_{i,0}-2p_{i,1}+p_{i,2}}{h_y^2} = \frac{-p_{i,1}+p_{i,2}}{h_y^2}
+\end{gather*}
+Therefore, the second derivative operator $DD$ in the python code, gets its first and last element changed to
+$-1/h^2$. The full matrices are shown in Equation \ref{lall}.
+
 \subsection*{Question 4}
 Placing a probe in the domian centre gives the following velocity $U$ along the time line to $T = 100$:
 \begin{figure}[H]
@@ -253,7 +296,7 @@ the times for steady flow was estimated to be:
 \end{lstlisting}
 This is also marked with red points in Figure \ref{plot1}.
 \subsection*{Question 5}
-Using OpenFoam in each of the cases A-C the following data where obtained: Figure \ref{caseA} shows
+Using OpenFoam in each of the cases A-C the following data were obtained: Figure \ref{caseA} shows
 both a solution from the Python implementation as well as OpenFOAM solution with the data visualized using matplotlib.
 
 \begin{figure}[H]
@@ -328,7 +371,7 @@ Likewise we can compare case B and C in a similar manner:
     \includegraphics[width = \textwidth]{plots/overline_RE5000.png}
     \caption{Plot over line (Case C): Python against OpenFOAM}
 \end{figure}
-We can conclude that the Python and OpenFOAM solutions converges to the same solution, and notably the largest differences was found close to
+We can conclude that the Python and OpenFOAM solutions converge to the same solution, and notably the largest differences were found close to
 the boundaries. In the above plots the boundary point ($L_x,L_y$) was actually excluded due to OpenFOAM didn't include it in the solution.
 
 Comparing the relative $L_2$-norm between the different steady solutions (OpenFOAM against Python) we got the following data:
@@ -351,4 +394,6 @@ obtained at $T= 50$:
     \caption{Case D}
     \label{caseD1}
 \end{figure}
+The visualization in Figure \ref{caseD1} clearly shows the symmetry in the velocity field at $y=0.5$,
+as the fluid flow generated from the top and bottom meet in the middle of the domain.
 \end{document}
