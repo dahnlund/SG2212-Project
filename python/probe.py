@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 
 #mat = loadmat('diag_data.mat')
-mat = loadmat("/Users/david/KTH/SG2212-Project/diag_data.mat")
+mat = loadmat("./diag_data.mat")
 t = mat['t'][0]
 u_vec = mat['uvel']
 cases = [25, 250, 5000]
